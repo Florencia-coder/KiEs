@@ -4,3 +4,17 @@ venv
 .vscode
 app/__pycache__
 app/routes/__pycache__
+# Ignorar entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+
+# Ignorar archivos de desarrollo
+*.log
+*.pyc
+*.pyo
+__pycache__/
+tests/
+.env
+.DS_Store
