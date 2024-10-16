@@ -1,0 +1,82 @@
+html {
+  font-family: "Roboto", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilo General */
+body {
+  background-color: #ddfaec; /* Verde claro */
+  color: #063a32; /* Verde oscuro */
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  gap: 30px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 50%;
+  background-color: #ffff;
+  position: relative;
+  min-height: 100%;
+  padding-bottom: 50px;
+}
+
+.container_title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+h1 {
+  font-weight: 700;
+  text-align: center;
+  font-size: 45px;
+  padding-bottom: 20px;
+}
+
+.card-text {
+  text-align: center;
+}
+
+.button:hover {
+  background-color: #063a32;
+}
+.btn-custom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-back {
+  border: 0px; /* Borde más sutil */
+  color: #6c757d; /* Color gris oscuro */
+  background-color: transparent; /* Fondo transparente */
+}
+
+.btn-back:hover {
+  background-color: #6c757d; /* Cambio de fondo en hover */
+  color: white; /* Texto blanco en hover */
+}
+
+.btn-back i {
+  font-size: 1rem; /* Ajuste de tamaño de la flecha */
+}
+
+.btn-bottom-left {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}

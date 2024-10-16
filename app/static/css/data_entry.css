@@ -1,0 +1,64 @@
+html {
+  font-family: "Roboto", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilo General */
+body {
+  background-color: #ddfaec; /* Verde claro */
+  color: #063a32; /* Verde oscuro */
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  position: relative;
+  gap: 30px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 50%;
+  background-color: #ffff;
+}
+
+h1 {
+  font-weight: 700;
+  text-align: center;
+  font-size: 45px;
+  padding-bottom: inherit;
+}
+
+.form {
+  width: 70%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-custom {
+  width: 100%; /* Todos los inputs ocuparán el 100% del ancho disponible */
+  max-width: 500px; /* Puedes ajustar este valor para limitar el tamaño máximo */
+}
+
+.btn-custom {
+  width: 100%; /* Para que el botón también ocupe el ancho total */
+  max-width: 500px; /* Ajustar si es necesario */
+}
+
+.btn-bottom-left {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
