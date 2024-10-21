@@ -270,6 +270,7 @@ function handleImageUpload(event) {
   document.getElementById("containerCard").style.display = "none";
   document.getElementById("infoBox").style.display = "flex";
   document.getElementById("backImg").style.display = "flex";
+  document.getElementById("infoImgBox").style.display = "none";
 }
 
 // Función para capturar la imagen del video feed
@@ -318,6 +319,7 @@ backButton.addEventListener("click", () => {
   analyzeButton.style.display = "none";
   const removeButton = document.querySelector(".remove-button");
   removeButton.style.display = "none";
+  document.getElementById("infoImgBox").style.display = "block";
 
   // Limpiar el canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpia el canvas por completo

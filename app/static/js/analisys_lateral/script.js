@@ -21,6 +21,8 @@ function previewImage(event) {
   const preview = document.getElementById("imagePreview");
   const imageContainer = document.getElementById("imageContainer");
   const removeImg = document.getElementById("removeImg");
+  document.getElementById("infoBox").style.display = "block";
+  document.getElementById("infoImgBox").style.display = "none";
 
   removeImg.style.display = "block";
   document.getElementById("uploadCard").style.display = "none"; // Ocultar tarjeta
@@ -272,6 +274,8 @@ function removeImage() {
   document.getElementById("uploadCard").style.display = "block"; // Mostrar tarjeta
   document.getElementById("removeImg").style.display = "none"; // Ocultar botón de eliminar imagen
   document.querySelector(".remove-button").style.display = "none";
+  document.getElementById("infoBox").style.display = "none";
+  document.getElementById("infoImgBox").style.display = "block";
 
   const imageContainer = document.querySelector(".image-container");
   imageContainer.style.display = "none"; // Ocultar contenedor de imagen

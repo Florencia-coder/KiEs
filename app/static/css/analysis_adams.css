@@ -183,9 +183,20 @@ footer {
   margin-top: 18px;
 }
 
-.info-img-box i {
+.info-img-box i,
+.info-box i {
   font-size: 14px; /* Tamaño del ícono */
   color: #063a32; /* Color del ícono */
+}
+.info-box {
+  display: none;
+  background-color: #f0f0f0; /* Fondo gris claro */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 10px 15px; /* Espaciado interno */
+  font-size: 14px; /* Tamaño de fuente */
+  color: #374643d7; /* Color del texto */
+  gap: 10px; /* Espaciado entre el ícono y el texto */
+  margin-top: 14px;
 }
 
 .card {
@@ -348,11 +359,12 @@ footer {
   .asymetry-list li {
     padding: 2px;
   }
-
+  .info-box,
   .info-img-box {
     font-size: 8px;
     padding: 5px 14px;
   }
+  .info-box i,
   .info-img-box i {
     font-size: 8px;
   }
