@@ -17,42 +17,44 @@ analyzeButton.addEventListener("click", () => {
   drawLinesBetweenPoints(points);
 });
 
-function removePoint() {
-  if (points.length > 0) {
-    // Remover el último punto del array
-    points.pop();
+function handleRemoveLastPoint() {
+  points.pop();
 
-    // Limpiar el canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Limpiar el canvas antes de redibujar
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Redibujar la imagen subida, si existe
-    if (uploadedImage) {
-      ctx.drawImage(uploadedImage, 0, 0, canvas.width, canvas.height);
+  // Redibujar la imagen manteniendo la proporción
+  if (uploadedImage) {
+    const imgWidth = uploadedImage.width;
+    const imgHeight = uploadedImage.height;
+    const aspectRatio = imgWidth / imgHeight;
+
+    let drawWidth, drawHeight;
+    if (canvas.width / canvas.height > aspectRatio) {
+      drawHeight = canvas.height;
+      drawWidth = canvas.height * aspectRatio;
+    } else {
+      drawWidth = canvas.width;
+      drawHeight = canvas.width / aspectRatio;
     }
 
-    // Redibujar los puntos restantes
-    points.forEach((point) => {
-      ctx.fillStyle = "red";
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
-      ctx.fill();
-    });
+    // Centrar la imagen
+    const xOffset = (canvas.width - drawWidth) / 2;
+    const yOffset = (canvas.height - drawHeight) / 2;
+    ctx.drawImage(uploadedImage, xOffset, yOffset, drawWidth, drawHeight);
+  }
 
-    // Si hay suficientes puntos, redibujar las líneas y ángulos
-    if (points.length === 4) {
-      drawLinesBetweenPoints(points);
-    }
+  // Redibujar los puntos restantes
+  points.forEach((point) => {
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = "red";
+    ctx.fill();
+    ctx.closePath();
+  });
 
-    // Verificar si es necesario ocultar el botón de análisis
-    if (points.length < 4) {
-      analyzeButton.style.display = "none";
-    }
-
-    // Verificar si es necesario ocultar el botón de remover
-    if (points.length === 0) {
-      const removeButton = document.querySelector(".remove-button");
-      removeButton.style.display = "none";
-    }
+  if (points.length === 0) {
+    document.getElementById("removeLastPoint").style.display = "none";
   }
 }
 
@@ -70,14 +72,29 @@ function calculateAngle(p1, p2, p3, p4) {
 
   return angleInDegrees;
 }
-
 // Función para dibujar líneas entre los puntos
 function drawLinesBetweenPoints(points) {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
 
   // Redibujar la imagen subida en el canvas primero (mantener la imagen existente)
   if (uploadedImage) {
-    ctx.drawImage(uploadedImage, 0, 0, canvas.width, canvas.height);
+    // Obtener las dimensiones de la imagen original
+    const imgWidth = uploadedImage.width;
+    const imgHeight = uploadedImage.height;
+
+    // Calcular el factor de escalado para que la imagen se ajuste al canvas
+    const scale = Math.min(canvas.width / imgWidth, canvas.height / imgHeight);
+
+    // Calcular nuevas dimensiones
+    const newWidth = imgWidth * scale;
+    const newHeight = imgHeight * scale;
+
+    // Calcular la posición para centrar la imagen en el canvas
+    const x = (canvas.width - newWidth) / 2;
+    const y = (canvas.height - newHeight) / 2;
+
+    // Dibujar la imagen escalada en el canvas
+    ctx.drawImage(uploadedImage, x, y, newWidth, newHeight);
   }
 
   ctx.fillStyle = "red"; // Color de los puntos
@@ -153,6 +170,8 @@ function drawLinesBetweenPoints(points) {
     angleList.appendChild(shoulderAngleLi);
     angleList.appendChild(hipAngleLi);
   }
+  analyzeButton.style.display = "none";
+  document.getElementById("removeLastPoint").style.display = "none";
 }
 
 // Función para calcular los ángulos de Cobb
@@ -217,7 +236,32 @@ function handleImageUpload(event) {
     reader.onload = function (e) {
       uploadedImage = new Image();
       uploadedImage.onload = function () {
-        ctx.drawImage(uploadedImage, 0, 0, canvas.width, canvas.height);
+        // Obtener las dimensiones originales de la imagen
+        const imgWidth = uploadedImage.width;
+        const imgHeight = uploadedImage.height;
+
+        // Calcular la relación de aspecto de la imagen
+        const aspectRatio = imgWidth / imgHeight;
+
+        // Calcular nuevas dimensiones para la imagen manteniendo la proporción
+        let drawWidth, drawHeight;
+        if (canvas.width / canvas.height > aspectRatio) {
+          // Si el canvas es más ancho en proporción, ajustamos el alto
+          drawHeight = canvas.height;
+          drawWidth = canvas.height * aspectRatio;
+        } else {
+          // Si el canvas es más alto en proporción, ajustamos el ancho
+          drawWidth = canvas.width;
+          drawHeight = canvas.width / aspectRatio;
+        }
+
+        // Limpiar el canvas antes de dibujar
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Dibujar la imagen en el canvas centrada
+        const xOffset = (canvas.width - drawWidth) / 2;
+        const yOffset = (canvas.height - drawHeight) / 2;
+        ctx.drawImage(uploadedImage, xOffset, yOffset, drawWidth, drawHeight);
       };
       uploadedImage.src = e.target.result;
     };
@@ -227,6 +271,7 @@ function handleImageUpload(event) {
   document.getElementById("infoBox").style.display = "flex";
   document.getElementById("backImg").style.display = "flex";
 }
+
 // Función para capturar la imagen del video feed
 function captureImageFromFeed() {
   // Crear un canvas temporal

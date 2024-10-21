@@ -93,7 +93,9 @@ footer {
 #canvas {
   display: none;
   width: 100%;
-  height: auto;
+  height: auto; /* Asegura que la altura se ajuste según el ancho */
+  object-fit: contain; /* Mantiene la proporción de la imagen */
+  max-width: 100%; /* No permite que la imagen exceda el ancho del contenedor */
   cursor: crosshair;
 }
 
@@ -142,8 +144,8 @@ footer {
   border-radius: 8px; /* Esquinas redondeadas */
   padding: 30px; /* Espaciado interno */
   text-align: center; /* Centra el texto */
-  width: 90%; /* Ancho de la tarjeta */
-  height: 350px;
+  width: 80%; /* Ancho de la tarjeta */
+  height: 300px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra de la tarjeta */
 }
 
@@ -207,7 +209,6 @@ form {
   align-items: center;
   width: 100%;
   gap: 24px;
-  margin-top: 24px;
 }
 
 .info-box {
@@ -220,7 +221,16 @@ form {
   gap: 10px; /* Espaciado entre el ícono y el texto */
 }
 
-.info-box i {
+.info-img-box {
+  background-color: #f0f0f0; /* Fondo gris claro */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 10px 15px; /* Espaciado interno */
+  font-size: 14px; /* Tamaño de fuente */
+  color: #374643d7; /* Color del texto */
+}
+
+.info-box i,
+.info-img-box i {
   font-size: 14px; /* Tamaño del ícono */
   color: #063a32; /* Color del ícono */
 }
@@ -327,7 +337,7 @@ form {
   }
 
   .container-card {
-    margin-top: 12px;
+    margin-top: 0;
   }
 
   .card {
@@ -361,11 +371,13 @@ form {
   .angle-list li {
     padding: 2px;
   }
-  .info-box {
+  .info-box,
+  .info-img-box {
     font-size: 8px;
     padding: 5px 14px;
   }
-  .info-box i {
+  .info-box i,
+  .info-img-box i {
     font-size: 8px;
   }
   .btn-left-top {

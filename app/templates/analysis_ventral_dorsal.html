@@ -27,14 +27,18 @@
       <button id="backImg" class="btn btn-light btn-left-top">
         <i class="bi bi-arrow-left"></i>
       </button>
+      <div class="info-img-box" id="infoImgBox">
+        <i class="bi bi-info-circle"></i>
+        La imagen de la persona debe ser de cuerpo entero con torso desnudo, o
+        con ropa ajustada contrastada con el fondo. Preferentemente de espalda a
+        la cámara.
+      </div>
       <div class="info-box" id="infoBox">
         <i class="bi bi-info-circle"></i>
-        Marque los primeros 2 puntos a la altura del acromion de ambas escápulas
-        de la persona; los siguientes 2 puntos a la altura del punto más
-        superior de las crestas ilíacas izquierda y derecha. Luego presione
-        "Analizar puntos" para obtener la información requerida. Puede corregir
-        la ubicación del punto presionando "Remover ultimo punto" para volverlo
-        a marcar.
+        Debe marcar los primeros 2 puntos; a la altura del acromion de ambas
+        escápulas de la persona.Y los siguientes 2 puntos; a la altura del punto
+        más superior de las crestas ilíacas izquierda y derecha para realizar el
+        análisis.
       </div>
       <div class="container-card" id="containerCard">
         <div class="card">
@@ -64,8 +68,9 @@
       <div class="button-container">
         <button
           type="button"
+          id="removeLastPoint"
           class="btn btn-light remove-button"
-          onclick="removePoint()"
+          onclick="handleRemoveLastPoint()"
         >
           <i class="bi bi-arrow-left"></i>
           Remover ultimo punto

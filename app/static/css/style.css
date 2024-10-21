@@ -1,36 +1,40 @@
-html {
+html,
+body {
   font-family: "Roboto", sans-serif;
+  height: 100%; /* Asegura que el body ocupe todo el alto de la pantalla */
+  margin: 0;
+  padding: 0;
 }
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 /* Estilo General */
 body {
   background-color: #ddfaec; /* Verde claro */
   color: #063a32; /* Verde oscuro */
-  width: 100vw;
-  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .container_home {
-  gap: 30px;
-  padding: 40px;
+  height: auto;
+  flex-grow: 1;
+  width: 50%;
+  background-color: #ffff;
+  padding-left: 200px;
+  padding-right: 200px;
+  position: relative;
+  padding-bottom: 40px;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
+  gap: 30px;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  width: 50%;
-  background-color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
 }
 
 .container_button {
@@ -92,7 +96,7 @@ img {
 .btn-custom {
   opacity: 0;
   transform: translateY(-50px);
-  animation: fadeIn 3s ease-in-out forwards;
+  animation: fadeIn 1s ease-in-out forwards;
 }
 
 /* Animación de entrada */
