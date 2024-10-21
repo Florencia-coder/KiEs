@@ -1,9 +1,10 @@
 const videoFeed = document.getElementById("videoFeed");
 const capturedImage = document.getElementById("capturedImage");
 const liveAnalysisBtn = document.getElementById("liveAnalysisBtn");
-const captureButton = document.getElementById("captureImageButton");
+const captureImageButton = document.getElementById("captureImageButton");
 const uploadButton = document.getElementById("uploadButton");
 const uploadImageInput = document.getElementById("uploadImage");
+const backButton = document.getElementById("backImg");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d"); // Inicializa el contexto del canvas
 let points = [];
@@ -15,6 +16,45 @@ const analyzeButton = document.getElementById("analyzeButton");
 analyzeButton.addEventListener("click", () => {
   drawLinesBetweenPoints(points);
 });
+
+function removePoint() {
+  if (points.length > 0) {
+    // Remover el último punto del array
+    points.pop();
+
+    // Limpiar el canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Redibujar la imagen subida, si existe
+    if (uploadedImage) {
+      ctx.drawImage(uploadedImage, 0, 0, canvas.width, canvas.height);
+    }
+
+    // Redibujar los puntos restantes
+    points.forEach((point) => {
+      ctx.fillStyle = "red";
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Si hay suficientes puntos, redibujar las líneas y ángulos
+    if (points.length === 4) {
+      drawLinesBetweenPoints(points);
+    }
+
+    // Verificar si es necesario ocultar el botón de análisis
+    if (points.length < 4) {
+      analyzeButton.style.display = "none";
+    }
+
+    // Verificar si es necesario ocultar el botón de remover
+    if (points.length === 0) {
+      const removeButton = document.querySelector(".remove-button");
+      removeButton.style.display = "none";
+    }
+  }
+}
 
 // Función para calcular el ángulo entre dos líneas
 function calculateAngle(p1, p2, p3, p4) {
@@ -155,6 +195,10 @@ canvas.addEventListener("click", (event) => {
   if (points.length === 4) {
     analyzeButton.style.display = "block";
   }
+  if (points.length >= 1) {
+    const removeButton = document.querySelector(".remove-button");
+    removeButton.style.display = "block";
+  }
 });
 
 // Agregar evento al botón "Subir imagen"
@@ -180,6 +224,8 @@ function handleImageUpload(event) {
     reader.readAsDataURL(file);
   }
   document.getElementById("containerCard").style.display = "none";
+  document.getElementById("infoBox").style.display = "flex";
+  document.getElementById("backImg").style.display = "flex";
 }
 // Función para capturar la imagen del video feed
 function captureImageFromFeed() {
@@ -199,6 +245,8 @@ function captureImageFromFeed() {
 
 // Mostrar el video feed cuando se presiona "Análisis en vivo"
 liveAnalysisBtn.addEventListener("click", () => {
+  document.getElementById("containerCard").style.display = "none";
+  backButton.style.display = "block";
   videoFeed.style.display = "block"; // Mostrar el video feed
   captureImageButton.style.display = "block";
 });
@@ -214,4 +262,30 @@ window.addEventListener("keydown", (event) => {
     event.preventDefault(); // Evita el envío del formulario
     captureImageFromFeed(); // Captura la imagen del feed
   }
+});
+
+backButton.addEventListener("click", () => {
+  // Mostrar elementos iniciales
+  document.getElementById("containerCard").style.display = "flex";
+  canvas.style.display = "none";
+  document.getElementById("infoBox").style.display = "none";
+  backButton.style.display = "none";
+  analyzeButton.style.display = "none";
+  const removeButton = document.querySelector(".remove-button");
+  removeButton.style.display = "none";
+
+  // Limpiar el canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpia el canvas por completo
+  uploadedImage = null;
+
+  // Reiniciar el array de puntos
+  points = [];
+
+  // Limpiar la lista de ángulos
+  const angleList = document.getElementById("angleList");
+  angleList.innerHTML = ""; // Limpiar el contenido de la lista
+
+  videoFeed.style.display = "none"; // Mostrar el video feed
+  captureImageButton.style.display = "none";
+  capturedImage.style.display = "none";
 });

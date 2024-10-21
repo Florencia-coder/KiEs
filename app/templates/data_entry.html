@@ -23,90 +23,88 @@
   </head>
   <body>
     <div class="container">
-      <h1>Datos del Paciente</h1>
+      <header>
+        <h1 class="text-center">DATOS DEL PACIENTE</h1>
+      </header>
       <form method="POST" class="form">
-        <div class="col-sm-10">
-          <input
-            type="text"
-            id="dni"
-            name="dni"
-            required
-            class="form-control input-custom"
-            placeholder="ID o DNI"
-          />
-        </div>
-        <div class="col-sm-10">
-          <input
-            type="text"
-            id="name"
-            name="name"
-            required
-            class="form-control input-custom"
-            placeholder="Nombre Completo"
-          />
-        </div>
-        <div class="col-sm-10">
-          <input
-            type="number"
-            id="age"
-            name="age"
-            required
-            class="form-control input-custom"
-            placeholder="Edad"
-          />
-        </div>
-        <div class="col-sm-10">
-          <input
-            type="number"
-            id="height"
-            name="height"
-            required
-            class="form-control input-custom"
-            placeholder="Altura (cm)"
-          />
-        </div>
-        <div class="col-sm-10">
-          <input
-            type="number"
-            id="weight"
-            name="weight"
-            required
-            class="form-control input-custom"
-            placeholder="Peso (kg)"
-          />
-        </div>
-        <div class="col-sm-10">
-          <input
-            type="date"
-            id="consultaDate"
-            name="consultaDate"
-            required
-            class="form-control input-custom"
-          />
-        </div>
-        <div class="col-sm-10">
-          <textarea
-            id="historial"
-            name="historial"
-            required
-            class="form-control input-custom"
-            placeholder="Historial Médico"
-            rows="5"
-          ></textarea>
-        </div>
-        <div class="col-sm-10">
-          <button
-            type="submit"
-            class="button btn btn-outline-success btn-custom"
-          >
-            GUARDAR Y CONTINUAR A SELECCION DE ANÁLISIS
-          </button>
-        </div>
+        <input
+          type="text"
+          id="dni"
+          name="dni"
+          required
+          class="form-control input-custom"
+          placeholder="ID o DNI"
+          pattern="\d{7,10}"
+          title="El DNI debe contener entre 7 y 10 dígitos."
+        />
+        <input
+          type="text"
+          id="name"
+          name="name"
+          class="form-control input-custom"
+          placeholder="Nombre Completo"
+          pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
+          title="El nombre solo debe contener letras y espacios."
+        />
+        <input
+          type="number"
+          id="age"
+          name="age"
+          required
+          class="form-control input-custom"
+          placeholder="Edad"
+          min="0"
+          max="120"
+          title="La edad debe estar entre 0 y 120 años."
+        />
+        <input
+          type="number"
+          id="height"
+          name="height"
+          class="form-control input-custom"
+          placeholder="Altura (cm)"
+          min="50"
+          max="250"
+          title="La altura debe estar entre 50 cm y 250 cm."
+        />
+        <input
+          type="number"
+          id="weight"
+          name="weight"
+          class="form-control input-custom"
+          placeholder="Peso (kg)"
+          min="1"
+          max="300"
+          title="El peso debe estar entre 1 kg y 300 kg."
+        />
+        <input
+          type="date"
+          id="consultaDate"
+          name="consultaDate"
+          required
+          class="form-control input-custom"
+        />
+        <textarea
+          id="historial"
+          name="historial"
+          class="form-control input-custom"
+          placeholder="Historial Médico"
+          rows="5"
+        ></textarea>
+        <button type="submit" class="button btn-custom">
+          GUARDAR Y CONTINUAR A SELECCION DE ANÁLISIS
+        </button>
       </form>
       <a href="{{ url_for('index') }}" class="btn btn-light btn-bottom-left">
         <i class="bi bi-arrow-left"></i> Volver al Menú Principal
       </a>
     </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 KiEs. Todos los derechos reservados.</p>
+    </footer>
+
     <!-- Script para establecer la fecha de consulta automáticamente -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {

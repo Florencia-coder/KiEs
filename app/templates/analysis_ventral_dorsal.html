@@ -24,10 +24,23 @@
       <header>
         <h1 class="text-center">ANÁLISIS VENTRAL - DORSAL</h1>
       </header>
+      <button id="backImg" class="btn btn-light btn-left-top">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+      <div class="info-box" id="infoBox">
+        <i class="bi bi-info-circle"></i>
+        Marque los primeros 2 puntos a la altura del acromion de ambas escápulas
+        de la persona; los siguientes 2 puntos a la altura del punto más
+        superior de las crestas ilíacas izquierda y derecha. Luego presione
+        "Analizar puntos" para obtener la información requerida. Puede corregir
+        la ubicación del punto presionando "Remover ultimo punto" para volverlo
+        a marcar.
+      </div>
       <div class="container-card" id="containerCard">
         <div class="card">
           <!-- Botón de subir imagen funcional -->
           <button type="button" id="uploadButton" class="custom-upload">
+            <i class="bi bi-camera"></i>
             Subir imagen
           </button>
           <input
@@ -42,28 +55,39 @@
         <div class="card">
           <!-- Botón de subir imagen funcional -->
           <button type="button" id="liveAnalysisBtn" class="custom-upload">
+            <i class="bi bi-camera-video"></i>
             Análisis en vivo
           </button>
         </div>
       </div>
       <canvas id="canvas"></canvas>
-      <button
-        type="button"
-        id="analyzeButton"
-        class="button btn btn-outline-success btn-custom"
-      >
-        Analizar puntos
-      </button>
+      <div class="button-container">
+        <button
+          type="button"
+          class="btn btn-light remove-button"
+          onclick="removePoint()"
+        >
+          <i class="bi bi-arrow-left"></i>
+          Remover ultimo punto
+        </button>
+        <button
+          type="button"
+          id="analyzeButton"
+          class="button btn btn-outline-success btn-custom"
+        >
+          Analizar puntos
+        </button>
+      </div>
       <!-- Imagen del feed de video -->
       <img
         id="videoFeed"
         src="{{ url_for('video_feed') }}"
         alt="Video en vivo"
       />
-      <button id="captureImageButton">Capturar</button>
+      <button id="captureImageButton" class="button">Capturar</button>
       <!-- Imagen capturada se mostrará aquí -->
       <img id="capturedImage" alt="Imagen Capturada" />
-      <ul id="angleList"></ul>
+      <ul id="angleList" class="angle-list"></ul>
       <a
         href="{{ url_for('analysis_selection') }}"
         class="btn btn-light btn-bottom-left"
@@ -71,6 +95,10 @@
         <i class="bi bi-arrow-left"></i> Volver a sección de análisis
       </a>
     </div>
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 KiEs. Todos los derechos reservados.</p>
+    </footer>
     <script src="../static/js/analysis_ventral/script.js"></script>
 
     <!-- Scripts -->

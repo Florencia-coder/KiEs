@@ -22,37 +22,69 @@
   </head>
   <body>
     <div class="container">
-      <h1 class="text-center w-100">Selección de Análisis</h1>
-      <div class="col-sm-6">
+      <header>
+        <h1 class="text-center">SELECCIÓN DE ANÁLISIS</h1>
+      </header>
+      <div class="col-m">
         <div class="card">
-          <div class="card-body d-flex justify-content-center align-items-center flex-column">
-            <h5 class="card-title">ANÁLISIS VENTRAL - DORSAL</h5>
-            <p class="card-text">Breve información sobre el análisis ventral o dorsal que realiza.Ángulo de Cobb</p>
-            <a href="{{ url_for('analysis_ventral_dorsal') }}" class="button btn btn-outline-success btn-custom">Realizar análisis</a>
+          <div
+            class="card-body d-flex justify-content-center align-items-center flex-column"
+          >
+            <h5 class="card-title text-center">ANÁLISIS VENTRAL - DORSAL</h5>
+            <p class="card-text">
+              Esta sección te permite realizar un análisis ventral-dorsal, ya
+              sea en vivo o de forma manual.
+            </p>
+            <a
+              href="{{ url_for('analysis_ventral_dorsal') }}"
+              class="button btn btn-outline-success btn-custom"
+              >Realizar análisis</a
+            >
           </div>
         </div>
+      </div>
+      <div class="col-m">
+        <div class="card">
+          <div
+            class="card-body d-flex justify-content-center align-items-center flex-column"
+          >
+            <h5 class="card-title">ANÁLISIS LATERAL</h5>
+            <p class="card-text">
+              Breve información nsobre el ánalisis lateral que realiza.
+            </p>
+            <a href="{{ url_for('analysis_lateral') }}" class="button"
+              >Realizar análisis</a
+            >
+          </div>
         </div>
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body d-flex justify-content-center align-items-center flex-column">
-              <h5 class="card-title">ANÁLISIS LATERAL</h5>
-              <p class="card-text">Breve información nsobre el ánalisis lateral que realiza.</p>
-              <a href="{{ url_for('analysis_lateral') }}" class="button btn btn-outline-success btn-custom">Realizar análisis</a>
-            </div>
+      </div>
+      <div class="col-m">
+        <div class="card">
+          <div
+            class="card-body d-flex justify-content-center align-items-center flex-column"
+          >
+            <h5 class="card-title">ANÁLISIS DE ESPINAS</h5>
+            <p class="card-text">
+              Esta sección te permitirá cargar una imagen y marcar los puntos
+              correspondientes para luego analizar asímetrias.
+            </p>
+            <a
+              href="{{ url_for('analysis_adams') }}"
+              class="button btn btn-outline-success btn-custom"
+              >Realizar análisis</a
+            >
           </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="card">
-              <div class="card-body d-flex justify-content-center align-items-center flex-column">
-                <h5 class="card-title">ANÁLISIS DE ESPINAS</h5>
-                <p class="card-text">Esta sección te permitirá cargar una imagen y marcar los puntos correspondientes para luego analizar asímetrias.</p>
-                <a href="{{ url_for('analysis_adams') }}" class="button btn btn-outline-success btn-custom">Realizar análisis</a>
-              </div>
-            </div>
-      <a href="{{ url_for('index') }}" class="btn btn-light btn-bottom-left">
-        <i class="bi bi-arrow-left"></i> Volver al Menú Principal
-      </a>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-light btn-bottom-left">
+          <i class="bi bi-arrow-left"></i> Volver al Menú Principal
+        </a>
+      </div>
     </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 KiEs. Todos los derechos reservados.</p>
+    </footer>
 
     <!-- Scripts -->
     <script

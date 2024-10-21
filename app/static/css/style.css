@@ -16,6 +16,7 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -28,7 +29,8 @@ body {
   align-items: center;
   height: 100%;
   width: 50%;
-  background-color: #ffff;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
 }
 
 .container_button {
@@ -39,44 +41,129 @@ body {
   align-items: center;
 }
 
-.button:hover {
-  background-color: #063a32;
-}
-.btn-custom {
-  width: 70%; /* Ancho fijo para ambos botones */
-  height: 60px; /* Alto fijo para ambos botones */
+/* Botón minimalista con flecha */
+.button {
+  background-color: transparent;
+  color: #063a32;
+  border: 2px solid #063a32;
+  padding: 15px 40px;
+  font-size: large;
+  font-weight: 600;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: x-large;
+  gap: 10px;
+  text-transform: uppercase;
+  border-radius: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.button span {
+  transition: transform 0.3s ease;
+}
+
+.button:hover {
+  background-color: #063a32;
+  color: #fff;
+}
+
+.button:hover span {
+  transform: translateX(5px); /* Mover la flecha hacia la derecha */
 }
 
 h1 {
-  font-weight: 700;
+  font-weight: 600;
   text-align: center;
-  font-size: 45px;
+  font-size: 38px;
   padding-bottom: inherit;
+  opacity: 0;
+  transform: translateY(-50px); /* Inicialmente fuera de pantalla */
+  animation: fadeIn 2s ease-in-out forwards;
 }
+
 img {
   width: 320px;
   height: auto;
+  opacity: 0;
+  transform: translateY(-50px);
+  animation: fadeIn 2.5s ease-in-out forwards;
 }
 
-/* Añade esta clase al CSS */
-@keyframes mirageEffect {
-  0% {
-    transform: rotateY(0deg);
-  }
-  50% {
-    transform: rotateY(25deg);
-  }
-  100% {
-    transform: rotateY(0deg);
+.btn-custom {
+  opacity: 0;
+  transform: translateY(-50px);
+  animation: fadeIn 3s ease-in-out forwards;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.logo {
-  animation: mirageEffect 4s infinite ease-in-out;
-  transform-style: preserve-3d; /* Para mantener el efecto 3D */
-  backface-visibility: hidden; /* Para evitar que se vea la parte trasera en el giro */
+/* Footer */
+footer {
+  background-color: #063a32;
+  color: #ffffff;
+  width: 50%; /* Mismo ancho que el contenedor */
+  text-align: center;
+  padding: 10px 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
+}
+
+/* Para pantallas pequeñas (celulares) */
+@media (max-width: 576px) {
+  .container_home {
+    flex-direction: column; /* Cambia a disposición vertical */
+    width: 90%; /* Aumenta el ancho para aprovechar el espacio */
+    padding: 20px; /* Reduce el padding para pantallas pequeñas */
+  }
+
+  h1 {
+    font-size: 28px; /* Ajusta el tamaño del título */
+  }
+
+  img {
+    width: 80%; /* Ajusta el tamaño de la imagen */
+  }
+
+  .button {
+    width: 80%; /* Botón más ancho en dispositivos pequeños */
+    padding: 10px 20px; /* Reduce el padding del botón */
+    font-size: small;
+  }
+  footer {
+    width: 90%;
+    padding: 5px 0px;
+    font-size: 12px;
+  }
+}
+
+/* Para pantallas medianas (tabletas) */
+@media (min-width: 577px) and (max-width: 1024px) {
+  .container_home {
+    width: 80%; /* Ajusta el ancho */
+    padding: 30px; /* Ajusta el padding */
+  }
+
+  h1 {
+    font-size: 34px; /* Ajusta el tamaño del título */
+  }
+
+  img {
+    width: 40%; /* Ajusta el tamaño de la imagen */
+  }
+
+  .button {
+    width: 60%; /* Ajusta el ancho del botón */
+  }
+  footer {
+    width: 80%;
+    font-size: small;
+    p {
+      margin-bottom: 0;
+    }
+  }
 }
