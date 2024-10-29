@@ -80,24 +80,24 @@ footer {
 #captureImageButton {
   display: none;
 }
-#videoFeed {
+/* #videoFeed {
   display: none;
   width: 640px;
   height: 480px;
-}
+} */
 #capturedImage {
   display: none;
   width: 640px;
   height: auto;
 }
-#canvas {
+/* #canvas {
   display: none;
   width: 100%;
-  height: auto; /* Asegura que la altura se ajuste según el ancho */
-  object-fit: contain; /* Mantiene la proporción de la imagen */
-  max-width: 100%; /* No permite que la imagen exceda el ancho del contenedor */
+  height: auto; 
+  object-fit: contain; 
+  max-width: 100%;
   cursor: crosshair;
-}
+} */
 
 .angle-list {
   list-style-type: none;

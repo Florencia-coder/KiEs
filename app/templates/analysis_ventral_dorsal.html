@@ -83,12 +83,8 @@
           Analizar puntos
         </button>
       </div>
-      <!-- Imagen del feed de video -->
-      <img
-        id="videoFeed"
-        src="{{ url_for('video_feed') }}"
-        alt="Video en vivo"
-      />
+      <video id="videoFeed" autoplay alt="Video en vivo"></video>
+      <canvas id="output_canvas" width="600px" height="600px"></canvas>
       <button id="captureImageButton" class="button">Capturar</button>
       <!-- Imagen capturada se mostrará aquí -->
       <img id="capturedImage" alt="Imagen Capturada" />
@@ -104,13 +100,107 @@
     <footer>
       <p>&copy; 2024 KiEs. Todos los derechos reservados.</p>
     </footer>
-    <script src="../static/js/analysis_ventral/script.js"></script>
-
-    <!-- Scripts -->
+    <!-- <script src="../static/js/analysis_ventral/script.js"></script> -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
+
+    <script>
+      const videoElement = document.getElementById("videoFeed");
+
+      // Cargar la cámara del usuario
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          videoElement.srcObject = stream;
+        })
+        .catch((error) => {
+          console.error("Error al acceder a la cámara:", error);
+        });
+
+      const pose = new Pose({
+        locateFile: (file) =>
+          `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+      });
+      pose.setOptions({
+        modelComplexity: 1,
+        smoothLandmarks: true,
+        enableSegmentation: false,
+        smoothSegmentation: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+      });
+
+      pose.onResults(onResults);
+
+      function onResults(results) {
+        const canvasElement = document.getElementById("output_canvas");
+        const canvasCtx = canvasElement.getContext("2d");
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+        if (results.poseLandmarks) {
+          // Asegúrate de que `drawConnectors` esté cargado
+          window.drawConnectors(
+            canvasCtx,
+            results.poseLandmarks,
+            POSE_CONNECTIONS,
+            { color: "#00FF00", lineWidth: 4 }
+          );
+        }
+      }
+
+      function drawLandmarks(landmarks) {
+        // Dibujar puntos y conexiones de pose usando MediaPipe DrawingUtils
+        drawConnectors(canvasCtx, landmarks, POSE_CONNECTIONS, {
+          color: "#00FF00",
+          lineWidth: 2,
+        });
+        drawLandmarks(canvasCtx, landmarks, { color: "#FF0000", lineWidth: 2 });
+
+        // Calcular y mostrar ángulos
+        const leftShoulder = landmarks[11];
+        const rightShoulder = landmarks[12];
+        const leftHip = landmarks[23];
+        const rightHip = landmarks[24];
+
+        // Calcular ángulos de hombros y caderas
+        const shoulderAngle = calculateAngle(leftShoulder, rightShoulder);
+        const hipAngle = calculateAngle(leftHip, rightHip);
+
+        // Mostrar ángulos en el canvas
+        canvasCtx.fillStyle = "blue";
+        canvasCtx.font = "16px Arial";
+        canvasCtx.fillText(
+          `Ángulo de Hombros: ${Math.round(shoulderAngle)}°`,
+          10,
+          30
+        );
+        canvasCtx.fillText(
+          `Ángulo de Caderas: ${Math.round(hipAngle)}°`,
+          10,
+          60
+        );
+      }
+
+      function calculateAngle(point1, point2) {
+        const dy = point2.y - point1.y;
+        const dx = point2.x - point1.x;
+        return Math.abs(Math.atan2(dy, dx) * (180 / Math.PI)); // Convertir radianes a grados
+      }
+
+      // Capturar video de la cámara y procesarlo con MediaPipe Pose
+      async function detectPose() {
+        await pose.send({ image: videoElement });
+        requestAnimationFrame(detectPose);
+      }
+
+      videoElement.onloadeddata = () => {
+        detectPose();
+      };
+    </script>
   </body>
 </html>
