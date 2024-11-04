@@ -1,3 +1,4 @@
+const containerVideo = document.getElementById("container-video");
 const videoFeed = document.getElementById("videoFeed");
 const capturedImage = document.getElementById("capturedImage");
 const liveAnalysisBtn = document.getElementById("liveAnalysisBtn");
@@ -5,13 +6,18 @@ const captureImageButton = document.getElementById("captureImageButton");
 const uploadButton = document.getElementById("uploadButton");
 const uploadImageInput = document.getElementById("uploadImage");
 const backButton = document.getElementById("backImg");
+const analyzeButton = document.getElementById("analyzeButton");
+const ouputCanvas = document.getElementById("output_canvas");
+const containerLive = document.getElementById("containerLive");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d"); // Inicializa el contexto del canvas
+
 let points = [];
+// Manejar la carga de la imagen
+let uploadedImage = null;
 
 canvas.width = 640; // Debe coincidir con el width en CSS
 canvas.height = 480; // Debe coincidir con el height en CSS
-const analyzeButton = document.getElementById("analyzeButton");
 
 analyzeButton.addEventListener("click", () => {
   drawLinesBetweenPoints(points);
@@ -154,6 +160,8 @@ function drawLinesBetweenPoints(points) {
 
     // Crear la lista ordenada (ol) en el DOM
     const angleList = document.getElementById("angleList");
+    angleList.style.display = "block";
+    angleList.innerText = "";
 
     // Crear los elementos de la lista (li)
     const shoulderAngleLi = document.createElement("li");
@@ -223,11 +231,12 @@ canvas.addEventListener("click", (event) => {
 // Agregar evento al botón "Subir imagen"
 uploadButton.addEventListener("click", () => {
   canvas.style.display = "block";
+  document.getElementById("containerCard").style.display = "none";
+  document.getElementById("infoBox").style.display = "flex";
+  document.getElementById("backImg").style.display = "flex";
+  document.getElementById("infoImgBox").style.display = "none";
   uploadImageInput.click();
 });
-
-// Manejar la carga de la imagen
-let uploadedImage = null;
 
 function handleImageUpload(event) {
   const file = event.target.files[0];
@@ -267,39 +276,16 @@ function handleImageUpload(event) {
     };
     reader.readAsDataURL(file);
   }
-  document.getElementById("containerCard").style.display = "none";
-  document.getElementById("infoBox").style.display = "flex";
-  document.getElementById("backImg").style.display = "flex";
-  document.getElementById("infoImgBox").style.display = "none";
-}
-
-// Función para capturar la imagen del video feed
-function captureImageFromFeed() {
-  // Crear un canvas temporal
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
-  canvas.width = videoFeed.width;
-  canvas.height = videoFeed.height;
-  // Dibujar la imagen del feed en el canvas
-  context.drawImage(videoFeed, 0, 0, canvas.width, canvas.height);
-
-  // Convertir el canvas a una URL de imagen
-  const imageURL = canvas.toDataURL("image/png");
-  capturedImage.src = imageURL;
-  capturedImage.style.display = "block"; // Mostrar la imagen capturada
 }
 
 // Mostrar el video feed cuando se presiona "Análisis en vivo"
 liveAnalysisBtn.addEventListener("click", () => {
   document.getElementById("containerCard").style.display = "none";
+  canvas.style.display = "none";
   backButton.style.display = "block";
+  containerVideo.style.display = "block";
   videoFeed.style.display = "block"; // Mostrar el video feed
   captureImageButton.style.display = "block";
-});
-
-captureImageButton.addEventListener("click", () => {
-  event.preventDefault(); // Evita el envío del formulario
-  captureImageFromFeed(); // Captura la imagen del feed
 });
 
 // Escuchar la tecla "Enter" para capturar la imagen
@@ -320,6 +306,7 @@ backButton.addEventListener("click", () => {
   const removeButton = document.querySelector(".remove-button");
   removeButton.style.display = "none";
   document.getElementById("infoImgBox").style.display = "block";
+  containerLive.style.display = "none";
 
   // Limpiar el canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpia el canvas por completo
