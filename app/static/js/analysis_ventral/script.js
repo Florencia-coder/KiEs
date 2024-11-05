@@ -162,6 +162,7 @@ function drawLinesBetweenPoints(points) {
     const angleList = document.getElementById("angleList");
     angleList.style.display = "block";
     angleList.innerText = "";
+    console.log("angleList:", angleList.style.display);
 
     // Crear los elementos de la lista (li)
     const shoulderAngleLi = document.createElement("li");
@@ -179,6 +180,7 @@ function drawLinesBetweenPoints(points) {
     angleList.appendChild(hipAngleLi);
   }
   analyzeButton.style.display = "none";
+  containerLive.style.display = "none";
   document.getElementById("removeLastPoint").style.display = "none";
 }
 
@@ -238,6 +240,7 @@ uploadButton.addEventListener("click", () => {
   uploadImageInput.click();
 });
 
+// Función para manejar la carga de la imagen
 function handleImageUpload(event) {
   const file = event.target.files[0];
   if (file) {
@@ -245,38 +248,44 @@ function handleImageUpload(event) {
     reader.onload = function (e) {
       uploadedImage = new Image();
       uploadedImage.onload = function () {
-        // Obtener las dimensiones originales de la imagen
+        // Limpiar el canvas y los puntos cada vez que se carga una nueva imagen
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        points = [];
+
+        // Calcular dimensiones para mantener la proporción de la imagen
         const imgWidth = uploadedImage.width;
         const imgHeight = uploadedImage.height;
-
-        // Calcular la relación de aspecto de la imagen
         const aspectRatio = imgWidth / imgHeight;
 
-        // Calcular nuevas dimensiones para la imagen manteniendo la proporción
         let drawWidth, drawHeight;
         if (canvas.width / canvas.height > aspectRatio) {
-          // Si el canvas es más ancho en proporción, ajustamos el alto
           drawHeight = canvas.height;
           drawWidth = canvas.height * aspectRatio;
         } else {
-          // Si el canvas es más alto en proporción, ajustamos el ancho
           drawWidth = canvas.width;
           drawHeight = canvas.width / aspectRatio;
         }
-
-        // Limpiar el canvas antes de dibujar
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Dibujar la imagen en el canvas centrada
         const xOffset = (canvas.width - drawWidth) / 2;
         const yOffset = (canvas.height - drawHeight) / 2;
         ctx.drawImage(uploadedImage, xOffset, yOffset, drawWidth, drawHeight);
+
+        // Opcional: Restablecer el botón "analizar" y otros elementos
+        analyzeButton.style.display = "none";
+        document.getElementById("removeLastPoint").style.display = "none";
       };
       uploadedImage.src = e.target.result;
     };
     reader.readAsDataURL(file);
+
+    // Restablece el valor del input para que se pueda seleccionar la misma imagen
+    uploadImageInput.value = "";
   }
 }
+
+// Agregar evento de cambio al input de archivo
+uploadImageInput.addEventListener("change", handleImageUpload);
 
 // Mostrar el video feed cuando se presiona "Análisis en vivo"
 liveAnalysisBtn.addEventListener("click", () => {
@@ -284,7 +293,7 @@ liveAnalysisBtn.addEventListener("click", () => {
   canvas.style.display = "none";
   backButton.style.display = "block";
   containerVideo.style.display = "block";
-  videoFeed.style.display = "block"; // Mostrar el video feed
+  containerLive.style.display = "block";
   captureImageButton.style.display = "block";
 });
 
@@ -319,7 +328,6 @@ backButton.addEventListener("click", () => {
   const angleList = document.getElementById("angleList");
   angleList.innerHTML = ""; // Limpiar el contenido de la lista
 
-  videoFeed.style.display = "none"; // Mostrar el video feed
   captureImageButton.style.display = "none";
   capturedImage.style.display = "none";
 });
