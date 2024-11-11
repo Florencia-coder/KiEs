@@ -166,6 +166,16 @@
         .then(function(stream) {
           videoElement.srcObject = stream;
           videoElement.play();
+
+          // Verificar si es la cámara trasera
+          const track = stream.getVideoTracks()[0];
+          const isRearCamera = track.getSettings().facingMode === "environment";
+
+          // Aplicar la transformación solo si es la cámara trasera
+          if (isRearCamera) {
+            videoElement.style.transform = "scaleX(-1)";
+          }
+
         })
         .catch(function(error) {
           console.error("No se pudo acceder a la cámara trasera. Intentando con la cámara frontal...");
