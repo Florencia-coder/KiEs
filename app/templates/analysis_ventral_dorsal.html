@@ -160,12 +160,29 @@
       const ctx2 = canvasElement.getContext("2d");
       let capturedImageData = null;
 
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => (videoElement.srcObject = stream))
-        .catch((error) =>
-          console.error("Error al acceder a la cámara:", error)
-        );
+        navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: "environment" } }
+        })
+        .then(function(stream) {
+          videoElement.srcObject = stream;
+          videoElement.play();
+        })
+        .catch(function(error) {
+          console.error("No se pudo acceder a la cámara trasera. Intentando con la cámara frontal...");
+
+        // Intentar con la cámara frontal si la trasera no está disponible
+        navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" }
+        })
+      .then(function(stream) {
+        videoElement.srcObject = stream;
+        videoElement.play();
+      })
+      .catch(function(error) {
+        console.error("Error al acceder a la cámara: ", error);
+      });
+    });
+
 
       const pose = new Pose({
         locateFile: (file) =>
