@@ -1,6 +1,6 @@
 let points = [];
 let scale = 1;
-
+let asymmetries = [];
 function removePoint() {
   points.pop();
   // Remover último punto visual (elemento HTML)
@@ -104,7 +104,7 @@ function markPoint(event) {
 
 function analyzePoints() {
   const removeButton = document.querySelector(".remove-button");
-
+  document.getElementById("generateButton").style.display ="block"
   removeButton.style.display = "none";
 
   // Revisar simetría de apófisis espinosas en el eje Y
@@ -127,7 +127,7 @@ function analyzePoints() {
   if (asymmetries.length > 0) {
     asymmetries.forEach(([point1, point2]) => {
       const listItem = document.createElement("li");
-      listItem.textContent =  `Asimetría detectada entre los puntos ${point1 + 1} y ${point2 + 1} `;
+      listItem.textContent = `Asimetría detectada entre los puntos ${point1 + 1} y ${point2 + 1}`;
       resultList.appendChild(listItem);
     });
   } else {
@@ -139,21 +139,28 @@ function analyzePoints() {
 
 function drawSymmetryLines(asymmetries) {
   const imageContainer = document.querySelector(".image-container");
+  
+  // Limpiar líneas previas
+  imageContainer.querySelectorAll(".line").forEach(line => line.remove());
+
   asymmetries.forEach(([index1, index2]) => {
-    const { x: x1, y: y1 } = points[index1 - 1];
-    const { x: x2, y: y2 } = points[index2 - 1];
+    // Verificar que los índices estén dentro del rango del array 'points'
+    if (points[index1] && points[index2]) {
+      const { x: x1, y: y1 } = points[index1];
+      const { x: x2, y: y2 } = points[index2];
 
-    const line = document.createElement("div");
-    line.classList.add("line");
-    const length = Math.hypot(x2 - x1, y2 - y1);
-    line.style.width = `${length}px`;
+      const line = document.createElement("div");
+      line.classList.add("line");
+      const length = Math.hypot(x2 - x1, y2 - y1);
+      line.style.width = `${length}px`;
 
-    const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
-    line.style.transform = `rotate(${angle}deg)`;
-    line.style.left = `${x1}px`;
-    line.style.top = `${y1}px`;
+      const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+      line.style.transform = `rotate(${angle}deg)`;
+      line.style.left = `${x1}px`;
+      line.style.top = `${y1}px`;
 
-    imageContainer.appendChild(line);
+      imageContainer.appendChild(line);
+    }
   });
 }
 
@@ -167,7 +174,6 @@ function removeImage() {
   document.querySelector(".remove-button").style.display = "none";
   document.getElementById("infoImgBox").style.display = "block";
   document.getElementById("infoBox").style.display = "none";
-  document.getElementById("generateButton").style.display ="none"
 
   const imageContainer = document.querySelector(".image-container");
   imageContainer.style.display = "none"; // Ocultar contenedor de imagen

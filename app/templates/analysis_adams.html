@@ -170,8 +170,34 @@
           // Capturar la imagen del análisis y agregarla al PDF
           const imageContainer = document.getElementById("imageContainer");
           html2canvas(imageContainer).then((canvas) => {
-            const imgData = canvas.toDataURL("image/png");
-            doc.addImage(imgData, "PNG", 15, imageYPosition + 5, 180, 120);
+
+            const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+
+        // Calcular dimensiones máximas del PDF
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = doc.internal.pageSize.getHeight();
+
+        // Definir el porcentaje de reducción (por ejemplo, 80% del tamaño del PDF)
+        const scaleFactor = 0.5;  // Esto será 80% del tamaño del PDF
+
+        // Calcular dimensiones de la imagen escalada por el factor de escala
+        let imgScaledWidth = pdfWidth * scaleFactor;
+        let imgScaledHeight = (imgHeight * imgScaledWidth) / imgWidth;
+
+        // Si la imagen escalada en altura es demasiado grande, ajusta por altura
+        if (imgScaledHeight > pdfHeight * scaleFactor) {
+            imgScaledHeight = pdfHeight * scaleFactor;
+            imgScaledWidth = (imgWidth * imgScaledHeight) / imgHeight;
+        }
+
+        // Calcular la posición para centrar la imagen en la página
+        const posX = (pdfWidth - imgScaledWidth) / 2;
+        const posY = imageYPosition + 5; // Ajusta Y según el contenido anterior
+
+        // Agregar la imagen escalada y centrada en el PDF
+        const imgData = canvas.toDataURL("image/png");
+        doc.addImage(imgData, "PNG", posX, posY, imgScaledWidth, imgScaledHeight);
 
             // Segunda página para los resultados de asimetría
             doc.addPage();
