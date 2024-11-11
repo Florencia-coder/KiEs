@@ -1,4 +1,4 @@
-from flask import render_template, Response
+from flask import render_template, Response, session,redirect,url_for
 import mediapipe as mp
 import numpy as np
 import cv2
@@ -12,7 +12,12 @@ pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 def init_analysis_ventral_dorsal_routes(app):
     @app.route('/analysis_ventral_dorsal')
     def analysis_ventral_dorsal():
-        return render_template('analysis_ventral_dorsal.html')
+                # Recuperar datos del paciente desde la sesión (asegurarse que exista)
+        paciente = session.get('paciente', None)
+        if not paciente:
+            return redirect(url_for('data_entry'))  # Redirige a la página de entrada de datos si no hay paciente
+        
+        return render_template('analysis_ventral_dorsal.html', paciente=paciente)
     
     @app.route('/video_feed')
     def video_feed():

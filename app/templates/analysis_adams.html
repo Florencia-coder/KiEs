@@ -14,7 +14,6 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/analysis_adams.css') }}"
     />
-
     <!-- Bootstrap Icons -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
@@ -30,7 +29,7 @@
         <i class="bi bi-info-circle"></i>
         La imagen de la persona debe ser de cuerpo entero, de frente a la misma,
         realizando la postura del Test de Adams, con el torso desnudo para la
-        apreciación visual de las apófisis.
+        apreciación visual de las apófisis.
       </div>
       <div class="info-box" id="infoBox">
         <i class="bi bi-info-circle"></i>
@@ -63,7 +62,6 @@
             />
             <button class="remove-img" onclick="removeImage()" id="removeImg">
               <i class="bi bi-x-circle"></i>
-              <!-- Icono de cerrar -->
             </button>
           </div>
         </div>
@@ -78,10 +76,14 @@
         <button type="button" class="button" onclick="analyzePoints()">
           ANALIZAR PUNTOS
         </button>
+
       </div>
       <div id="result">
         <ul id="asymmetryList" class="asymetry-list"></ul>
       </div>
+      <button type="button" class="button" id="generateButton" onclick="generarPDF()">
+        GUARDAR ANÁLISIS
+      </button>
       <a
         href="{{ url_for('analysis_selection') }}"
         class="btn btn-light btn-bottom-left"
@@ -89,17 +91,115 @@
         <i class="bi bi-arrow-left"></i> Volver a sección de análisis
       </a>
     </div>
+
     <!-- Footer -->
     <footer>
       <p>&copy; 2024 KiEs. Todos los derechos reservados.</p>
     </footer>
-    <script src="../static/js/analysis_adams/script.js"></script>
 
-    <!-- Scripts -->
+    <!-- External Libraries -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="../static/js/analysis_adams/script.js"></script>
+
+    <!-- Función generarPDF -->
+    <script>
+      const pacienteDatos = JSON.parse('{{ paciente | tojson | safe }}');
+      function generarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        // Configuración de márgenes y tamaño de fuente
+        const lineSpacing = 8;
+        const marginLeft = 15;
+        let yPosition = 20; // Posición inicial
+
+        function checkPageLimit(yPos, extraSpace = 0) {
+          if (yPos + extraSpace >= doc.internal.pageSize.height) {
+            doc.addPage();
+            yPosition = 20; // Reiniciar posición en la nueva página
+          }
+        }
+
+        // Título del documento
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.text("Análisis de Asimetría de Espinas", 105, 20, { align: "center" });
+        doc.setLineWidth(0.5);
+        doc.line(54, 23, 155, 23); // Subrayado del título
+
+        // Agregar logo
+        const logoImg = new Image();
+        logoImg.src = "static/img/logo.png";
+
+        logoImg.onload = function () {
+          const logoWidth = 20;
+          const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
+          doc.addImage(logoImg, "PNG", 10, 10, logoWidth, logoHeight);
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(8);
+          doc.text("KiEs", 20, 36, { align: "center" });
+
+          // Información del paciente
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(12);
+          doc.text("Datos del Paciente:", 15, 45);
+          doc.setLineWidth(0.3);
+          doc.line(15, 48, 52, 48); 
+
+          // Mostrar la información del paciente
+          const datosPacienteY = 55;
+          const lineSpacing = 8;
+          doc.setFontSize(10);
+          doc.text(`DNI: ${pacienteDatos["dni"]}`, 15, datosPacienteY);
+          doc.text(`Nombre: ${pacienteDatos.name}`, 15, datosPacienteY + lineSpacing);
+          doc.text(`Edad: ${pacienteDatos.age}`, 15, datosPacienteY + 2 * lineSpacing);
+          doc.text(`Altura: ${pacienteDatos.height}`, 15, datosPacienteY + 3 * lineSpacing);
+          doc.text(`Peso: ${pacienteDatos.weight}`, 15, datosPacienteY + 4 * lineSpacing);
+          doc.text(`Fecha de consulta: ${pacienteDatos.consultaDate}`, 15, datosPacienteY + 5 * lineSpacing);
+          doc.text(`Historial: ${pacienteDatos.historial}`, 15, datosPacienteY + 6 * lineSpacing);
+
+          // Línea separadora entre datos del paciente y análisis de imagen
+          const imageYPosition = datosPacienteY + 6 * lineSpacing + 10;
+          doc.line(15, imageYPosition, 195, imageYPosition);
+
+          // Capturar la imagen del análisis y agregarla al PDF
+          const imageContainer = document.getElementById("imageContainer");
+          html2canvas(imageContainer).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            doc.addImage(imgData, "PNG", 15, imageYPosition + 5, 180, 120);
+
+            // Segunda página para los resultados de asimetría
+            doc.addPage();
+            yPosition = 20;
+
+            // Título de la segunda página
+            doc.setFontSize(12);
+            doc.text("Asimetrías detectadas:", 15, yPosition);
+            doc.setLineWidth(0.3);
+            doc.line(15, yPosition + 2 , 58, yPosition + 2); // Línea debajo de "Datos del Paciente"
+            
+            // Lista de asimetrías detectadas
+            doc.setFontSize(10);
+            const asymmetries = Array.from(document.getElementById("asymmetryList").children).map(li => li.innerText);
+            if (asymmetries.length > 0) {
+              asymmetries.forEach((asymmetry, index) => {
+                checkPageLimit(yPosition, 10);
+                doc.text(asymmetry, marginLeft, yPosition + 8);
+                yPosition += lineSpacing;
+              });
+            } else {
+              doc.text("No se detectaron asimetrías significativas.", marginLeft, yPosition);
+            }
+            // Guardar el PDF
+            doc.save("Análisis_Espinas.pdf");
+          });
+        };
+      }
+    </script>
   </body>
 </html>

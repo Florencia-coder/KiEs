@@ -64,6 +64,9 @@ footer {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
+#generateButton{
+  display: none;
+}
 .asymetry-list {
   list-style-type: none;
   padding: 0;

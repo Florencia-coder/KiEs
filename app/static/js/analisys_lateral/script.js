@@ -1,6 +1,8 @@
 let points = [];
 let scale = 1;
-
+const removeButton = document.querySelector(".remove-button");
+// const pacienteDatos = JSON.parse('paciente');
+// const pacienteDatoss = JSON.parse('{"paciente"}');
 function removePoint() {
   points.pop();
   // Remover último punto visual (elemento HTML)
@@ -111,6 +113,7 @@ function calcularAngulo(p1, p2, p3) {
   if (angle < 0) angle += 360;
   return angle;
 }
+
 function analyzePoints() {
   const asymmetries = [];
   const symmetries = []; // almacenamiento de asimetria de puntos
@@ -121,16 +124,21 @@ function analyzePoints() {
     alert("Se requieren al menos 3 puntos para realizar el análisis.");
     return;
   }
+
   // Calcular los ángulos
   const anguloCervical = calcularAngulo(points[0], points[1], points[2]);
-  // const evaluacionCervical = evaluarCervical(anguloCervical);
+
+  // Evaluar postura cervical
+  const evaluacionCervical = evaluarCervical(anguloCervical);
+
   let anguloDorsal = null;
   let evaluacionDorsal = "";
   if (points.length == 4) {
-    anguloDorsal = calcularAngulo(points[1], points[2], points[3] || points[2]);
+    anguloDorsal = calcularAngulo(points[1], points[2], points[3]);
     evaluacionDorsal = evaluarDorsal(anguloDorsal);
   }
 
+  // Verificar asimetrías
   for (let i = 0; i < points.length - 2; i++) {
     const { x: x1, y: y1 } = points[i];
     const { x: x2, y: y2 } = points[i + 1];
@@ -150,32 +158,30 @@ function analyzePoints() {
   console.log({ symmetries });
   console.log({ asymmetries });
 
-  // Dibujar los puntos que estan entre ambas asimetrias
+  // Dibujar los puntos que están entre ambas asimetrías
   drawSymmetryLines(asymmetries);
 
-  // Mostrar resultado de los angulos
+  // Mostrar resultado de los ángulos y las evaluaciones
   const resultList = document.getElementById("asymmetryList");
-  resultList.innerHTML = ""; // borrar resultados anteriores
-  if (asymmetries.length > 0) {
-    asymmetries.forEach(([anguloCervical, evaluacionCervical]) => {
-      const cervicalItem = document.createElement("li");
-      cervicalItem.textContent = `Ángulo Cervical: ${anguloCervical.toFixed(
-        2
-      )} grados - ${evaluacionCervical}`;
-      resultList.appendChild(cervicalItem);
-    });
-  } else {
-    if (anguloDorsal !== null) {
-      const dorsalItem = document.createElement("li");
-      dorsalItem.textContent = `Ángulo Dorsal: ${anguloDorsal.toFixed(
-        2
-      )} grados - ${evaluacionDorsal}`;
-      resultList.appendChild(dorsalItem);
-    }
+  resultList.style.display = "block";
+  resultList.innerHTML = ""; // Borrar resultados anteriores
+  const cervicalItem = document.createElement("li");
+  cervicalItem.textContent = `Ángulo Cervical: ${anguloCervical.toFixed(
+    2
+  )} grados - ${evaluacionCervical}`;
+  resultList.appendChild(cervicalItem);
+
+  if (anguloDorsal !== null) {
+    const dorsalItem = document.createElement("li");
+    dorsalItem.textContent = `Ángulo Dorsal: ${anguloDorsal.toFixed(
+      2
+    )} grados - ${evaluacionDorsal}`;
+    resultList.appendChild(dorsalItem);
   }
+  document.getElementById("generateButton").style.display = "block";
 }
 
-function drawSymmetryLines() {
+function drawSymmetryLines(asymmetries) {
   const imageContainer = document.querySelector(".image-container");
 
   // Limpiar líneas anteriores
@@ -207,7 +213,7 @@ function evaluarCervical(angulo) {
     return "Postura cervical: Dentro de rango normal (160 a 180 grados).";
   } else if (angulo < 160) {
     return "Postura cervical: Hiperlordosis cervical (Ángulo menor a 160 grados).";
-  } else {
+  } else if (angulo > 180) {
     return "Postura cervical: Hipocifosis cervical (Ángulo mayor a 180 grados).";
   }
 }
@@ -218,75 +224,26 @@ function evaluarDorsal(angulo) {
     return "Postura dorsal: Dentro de rango normal (170 a 180 grados).";
   } else if (angulo < 170) {
     return "Postura dorsal: Hipercifosis dorsal (Ángulo menor a 170 grados).";
-  } else {
+  } else if (angulo > 180) {
     return "Postura dorsal: Hipolordosis dorsal (Ángulo mayor a 180 grados).";
   }
 }
 
-document
-  .getElementById("analyzeButton")
-  .addEventListener("click", async function () {
-    const fileInput = document.getElementById("fileInput");
-    if (fileInput.files.length === 0) {
-      alert("Por favor, selecciona una imagen.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", fileInput.files[0]);
-    formData.append("puntos_marcados", JSON.stringify(puntosMarcados));
-
-    const response = await fetch("/analysis_lateral", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      processedImage.src = `uploads/${data.processed_image}`;
-      processedImage.onload = function () {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(processedImage, 0, 0);
-        mostrarEvaluaciones(data);
-      };
-    } else {
-      alert(data.error);
-    }
-  });
-
-function mostrarEvaluaciones(data) {
-  ctx.fillStyle = "green";
-  ctx.font = "16px Arial";
-  ctx.fillText(`Ángulo Cervical: ${data.angulo_cervical}`, 10, 30);
-  ctx.fillText(`Ángulo Dorsal: ${data.angulo_dorsal}`, 10, 60);
-
-  // Mostrar las evaluaciones
-  ctx.fillStyle = "blue"; // Cambia el color si es necesario
-  ctx.fillText(data.evaluacion_cervical, 10, 100);
-  ctx.fillText(data.evaluacion_dorsal, 10, 130);
-}
-
-function removeImage() {
-  // Eliminar imagen, puntos y líneas, y mostrar tarjeta de nuevo
-  const imgPreview = document.getElementById("imagePreview");
-  imgPreview.src = "#";
-  imgPreview.style.display = "none";
-  document.getElementById("uploadCard").style.display = "block"; // Mostrar tarjeta
-  document.getElementById("removeImg").style.display = "none"; // Ocultar botón de eliminar imagen
-  document.querySelector(".remove-button").style.display = "none";
+// Asignar eventos a los botones y elementos de la página
+document.getElementById("removeImg").addEventListener("click", () => {
+  removeButton.style.display = "none";
+  const resultList = document.getElementById("asymmetryList");
+  resultList.style.display = "none";
+  resultList.innerHTML = "";
+  document.getElementById("generateButton").style.display = "none";
+  document.getElementById("imagePreview").src = "#";
+  document.getElementById("imagePreview").style.display = "none";
+  document.getElementById("imageContainer").style.display = "none";
   document.getElementById("infoBox").style.display = "none";
   document.getElementById("infoImgBox").style.display = "block";
-
-  const imageContainer = document.querySelector(".image-container");
-  imageContainer.style.display = "none"; // Ocultar contenedor de imagen
-  document.getElementById("file").value = ""; // Limpiar input de archivo
-
-  // Eliminar puntos y líneas dibujadas
+  document.getElementById("uploadCard").style.display = "block";
   points = [];
-  imageContainer.querySelectorAll(".point").forEach((point) => point.remove());
-  imageContainer.querySelectorAll(".line").forEach((line) => line.remove());
-
-  // Eliminar las listas de asimetrías previas
-  const resultList = document.getElementById("asymmetryList");
-  resultList.innerHTML = ""; // Vaciar la lista de resultados de asimetría
-}
+});
+// document.getElementById("markImage").addEventListener("click", markPoint);
+// document.getElementById("analyzeBtn").addEventListener("click", analyzePoints);
+// document.getElementById("removeButton").addEventListener("click", removePoint);

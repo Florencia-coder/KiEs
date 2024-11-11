@@ -87,7 +87,6 @@ footer {
   height: 480px;
 } */
 #capturedImage {
-  transform: scaleX(-1);
   display: none;
   width: 100%;
   height: auto;
@@ -144,7 +143,14 @@ footer {
 
 .btn-custom {
   width: 100%;
-  margin-top: 24px;
+}
+
+#generateButton {
+  display: none;
+}
+
+#generateLiveButton {
+  display: none;
 }
 
 .card {

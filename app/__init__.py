@@ -1,5 +1,6 @@
 from flask_bootstrap import Bootstrap4
 from flask import Flask
+from config import Config  
 
 def create_app():
     app = Flask(__name__)
@@ -7,6 +8,10 @@ def create_app():
     
     # Cargando configuración
     app.config.from_pyfile('../config.py')
+    
+    # Cargar la configuración desde la clase Config
+    app.config.from_object(Config)
+
 
     # Registrando las rutas
     from .routes.index_routes import init_index_routes

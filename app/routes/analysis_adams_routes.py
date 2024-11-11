@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, current_app
+from flask import render_template, request, redirect, current_app, session, url_for
 from werkzeug.utils import secure_filename
 import numpy as np
 import cv2
@@ -10,6 +10,10 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 def init_analysis_adams_routes(app):
     @app.route('/analysis_adams', methods=['GET', 'POST'])
     def analysis_adams():
+        # Recuperar datos del paciente desde la sesión (asegurarse que exista)
+        paciente = session.get('paciente', None)
+        if not paciente:
+            return redirect(url_for('data_entry'))  # Redirige a la página de entrada de datos si no hay paciente
         analyzed_image = None
         if request.method == 'POST':
             if 'file' not in request.files:
@@ -53,7 +57,7 @@ def init_analysis_adams_routes(app):
 
                     return render_template('analysis_adams.html', analyzed_image=analyzed_image)
 
-        return render_template('analysis_adams.html', analyzed_image=analyzed_image)
+        return render_template('analysis_adams.html', analyzed_image=analyzed_image, paciente = paciente)
 
     
 # Función para guardar la imagen en el servidor

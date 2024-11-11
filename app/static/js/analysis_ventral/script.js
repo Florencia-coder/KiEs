@@ -9,6 +9,7 @@ const backButton = document.getElementById("backImg");
 const analyzeButton = document.getElementById("analyzeButton");
 const ouputCanvas = document.getElementById("output_canvas");
 const containerLive = document.getElementById("containerLive");
+const angleList = document.getElementById("angleList");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d"); // Inicializa el contexto del canvas
 
@@ -26,6 +27,10 @@ analyzeButton.addEventListener("click", () => {
 function handleRemoveLastPoint() {
   points.pop();
 
+  if (points.length < 4) {
+    angleList.style.display = "none";
+    document.getElementById("generateButton").style.display = "none";
+  }
   // Limpiar el canvas antes de redibujar
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -54,7 +59,7 @@ function handleRemoveLastPoint() {
   points.forEach((point) => {
     ctx.beginPath();
     ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "green";
     ctx.fill();
     ctx.closePath();
   });
@@ -64,7 +69,6 @@ function handleRemoveLastPoint() {
   }
 }
 
-// Función para calcular el ángulo entre dos líneas
 function calculateAngle(p1, p2, p3, p4) {
   const line1 = { x: p2.x - p1.x, y: p2.y - p1.y };
   const line2 = { x: p4.x - p3.x, y: p4.y - p3.y };
@@ -73,8 +77,12 @@ function calculateAngle(p1, p2, p3, p4) {
   const magnitude1 = Math.sqrt(line1.x ** 2 + line1.y ** 2);
   const magnitude2 = Math.sqrt(line2.x ** 2 + line2.y ** 2);
 
-  const angleInRadians = Math.acos(dotProduct / (magnitude1 * magnitude2));
-  const angleInDegrees = angleInRadians * (180 / Math.PI); // Convertir a grados
+  let angleInRadians = Math.acos(dotProduct / (magnitude1 * magnitude2));
+
+  if (isNaN(angleInRadians)) {
+    angleInRadians = 0; // Si el valor está fuera de rango, lo dejamos en 0
+  }
+  const angleInDegrees = angleInRadians * (180 / Math.PI);
 
   return angleInDegrees;
 }
@@ -157,31 +165,32 @@ function drawLinesBetweenPoints(points) {
       { x: points[2].x, y: hipY },
       { x: points[3].x, y: hipY }
     );
-
-    // Crear la lista ordenada (ol) en el DOM
-    const angleList = document.getElementById("angleList");
-    angleList.style.display = "block";
-    angleList.innerText = "";
-    console.log("angleList:", angleList.style.display);
-
-    // Crear los elementos de la lista (li)
-    const shoulderAngleLi = document.createElement("li");
-    shoulderAngleLi.textContent = `Ángulo entre los hombros: ${shoulderAngle.toFixed(
-      2
-    )}°`;
-
-    const hipAngleLi = document.createElement("li");
-    hipAngleLi.textContent = `Ángulo entre las caderas: ${hipAngle.toFixed(
-      2
-    )}°`;
-
-    // Agregar los elementos li a la lista ol
-    angleList.appendChild(shoulderAngleLi);
-    angleList.appendChild(hipAngleLi);
+    addAngleList(shoulderAngle, hipAngle);
   }
   analyzeButton.style.display = "none";
   containerLive.style.display = "none";
   document.getElementById("removeLastPoint").style.display = "none";
+}
+
+function addAngleList(shoulderAngle, hipAngle) {
+  angleList.style.display = "block";
+  angleList.innerText = "";
+  console.log("angleList:", angleList.style.display);
+
+  // Crear los elementos de la lista (li)
+  const shoulderAngleLi = document.createElement("li");
+  shoulderAngleLi.textContent = `Ángulo interno entre los hombros: ${shoulderAngle.toFixed(
+    2
+  )}°`;
+
+  const hipAngleLi = document.createElement("li");
+  hipAngleLi.textContent = `Ángulo interno entre las caderas: ${hipAngle.toFixed(
+    2
+  )}°`;
+
+  // Agregar los elementos li a la lista ol
+  angleList.appendChild(shoulderAngleLi);
+  angleList.appendChild(hipAngleLi);
 }
 
 // Función para calcular los ángulos de Cobb
@@ -203,32 +212,6 @@ function calculateCobbAngle(points) {
       console.error("Error al calcular los ángulos:", error);
     });
 }
-
-// Manejar el clic en el canvas
-canvas.addEventListener("click", (event) => {
-  const rect = canvas.getBoundingClientRect(); // Obtener las dimensiones reales del canvas
-  const scaleX = canvas.width / rect.width; // Calcular el factor de escala en el eje X
-  const scaleY = canvas.height / rect.height; // Calcular el factor de escala en el eje Y
-
-  // Ajustar las coordenadas del clic para tener en cuenta el redimensionamiento
-  const x = (event.clientX - rect.left) * scaleX;
-  const y = (event.clientY - rect.top) * scaleY;
-
-  if (points.length < 4) {
-    points.push({ x, y });
-    ctx.fillStyle = "red";
-    ctx.beginPath();
-    ctx.arc(x, y, 5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  if (points.length === 4) {
-    analyzeButton.style.display = "block";
-  }
-  if (points.length >= 1) {
-    const removeButton = document.querySelector(".remove-button");
-    removeButton.style.display = "block";
-  }
-});
 
 // Agregar evento al botón "Subir imagen"
 uploadButton.addEventListener("click", () => {
@@ -316,6 +299,8 @@ backButton.addEventListener("click", () => {
   removeButton.style.display = "none";
   document.getElementById("infoImgBox").style.display = "block";
   containerLive.style.display = "none";
+  document.getElementById("generateButton").style.display = "none";
+  document.getElementById("generateLiveButton").style.display = "none";
 
   // Limpiar el canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpia el canvas por completo
@@ -331,3 +316,242 @@ backButton.addEventListener("click", () => {
   captureImageButton.style.display = "none";
   capturedImage.style.display = "none";
 });
+
+function generatePDF(imgData, shoulderAngle, hipAngle) {
+  console.log({ imgData });
+  console.log({ shoulderAngle });
+  console.log({ hipAngle });
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Añadir título estilizado, centrado y subrayado
+  doc.setFont("roboto", "bold");
+  doc.setFontSize(18);
+  doc.text("Análisis de Imagen Ventral-Dorsal", 105, 20, { align: "center" });
+  doc.setLineWidth(0.5);
+  doc.line(52, 23, 158, 23); // Subrayado del título
+
+  const logoImg = new Image();
+  logoImg.src = "static/img/logo.png";
+
+  logoImg.onload = function () {
+    const logoWidth = 20;
+    const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
+    doc.addImage(logoImg, "PNG", 10, 10, logoWidth, logoHeight);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.text("KiEs", 20, 36, { align: "center" });
+
+    // Información del paciente
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    doc.text("Datos del Paciente:", 15, 45);
+    doc.setLineWidth(0.3);
+    doc.line(15, 48, 52, 48); // Línea debajo de "Datos del Paciente"
+
+    // Mostrar la información del paciente con margen a la izquierda
+    doc.setFontSize(10);
+    const datosPacienteY = 55;
+    const lineSpacing = 5;
+    doc.text(`DNI: ${pacienteDatos["dni"]}`, 15, datosPacienteY);
+    doc.text(`Nombre: ${pacienteDatos.name}`, 15, datosPacienteY + lineSpacing);
+    doc.text(`Edad: ${pacienteDatos.age}`, 15, datosPacienteY + 2 * lineSpacing);
+    doc.text(`Altura: ${pacienteDatos.height}`, 15, datosPacienteY + 3 * lineSpacing);
+    doc.text(`Peso: ${pacienteDatos.weight}`, 15, datosPacienteY + 4 * lineSpacing);
+    doc.text(`Fecha de consulta: ${pacienteDatos.consultaDate}`, 15, datosPacienteY + 5 * lineSpacing);
+    doc.text(`Historial: ${pacienteDatos.historial}`, 15, datosPacienteY + 6 * lineSpacing);
+
+    // Separador entre los datos del paciente y la imagen de análisis
+    const imageYPosition = datosPacienteY + 6 * lineSpacing + 10;
+    doc.line(15, imageYPosition, 195, imageYPosition); // Línea separadora
+
+    // Añadir imagen capturada del canvas
+    doc.addImage(imgData, "PNG", 15, imageYPosition + 5, 180, 120);
+
+    // Agregar una línea separadora después de la imagen
+    const lineYPosition = imageYPosition + 130; // Ajusta según sea necesario
+    doc.setLineWidth(0.3);
+    doc.line(15, lineYPosition, 195, lineYPosition); // Línea separadora
+
+    // Configuración de texto para puntos y líneas
+    doc.setFontSize(12);
+    doc.setTextColor(50, 50, 50); // Color de texto gris oscuro
+
+    // Agregar detalles de puntos en el PDF
+    if (points.length >= 4) {
+      doc.text(`Ángulos internos:`, 15,
+        imageYPosition + 140);
+        doc.setLineWidth(0.3);
+        doc.line(15, imageYPosition + 142 , 47, imageYPosition +142); // Línea debajo de "Datos del Paciente"
+        doc.setFontSize(10);
+      doc.text(
+        `Ángulo interno entre los Hombros: ${shoulderAngle.toFixed(2)}°`,
+        15,
+        imageYPosition + 150
+      );
+      doc.text(
+        `Ángulo interno entre las Caderas: ${hipAngle.toFixed(2)}°`,
+        15,
+        imageYPosition + 155
+      );
+    }
+
+    // Guardar el PDF
+    doc.save("Análisis_ventral_dorsal.pdf");
+  };
+}
+
+// Ajustar el botón de "Guardar Análisis"
+document.getElementById("generateButton").addEventListener("click", (event) => {
+  event.preventDefault(); // Evita el envío del formulario
+  generatePDF(
+    canvas.toDataURL("image/png"),
+    calculateAngleAndDraw(points[0], points[1], true),
+    calculateAngleAndDraw(points[2], points[3], false)
+  ); // Genera y descarga el PDF
+});
+
+// Función para capturar el clic y agregar los puntos de los hombros y caderas
+canvas.addEventListener("click", (event) => {
+  if (points.length < 4) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width; // Calcular el factor de escala en el eje X
+    const scaleY = canvas.height / rect.height; // Calcular el factor de escala en el eje Y
+
+    // Ajustar las coordenadas del clic para tener en cuenta el redimensionamiento
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;
+
+    points.push({ x, y });
+
+    // Dibuja un círculo en el punto seleccionado
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+    ctx.fillStyle = "green";
+    ctx.fill();
+    ctx.closePath();
+
+    // Cuando hayamos seleccionado 4 puntos, dibujamos las líneas y calculamos los ángulos
+    if (points.length === 4) {
+      const shoulderAngle = calculateAngleAndDraw(points[0], points[1], true);
+      const hipAngle = calculateAngleAndDraw(points[2], points[3], false);
+
+      // Crear la lista ordenada (ol) en el DOM
+      const angleList = document.getElementById("angleList");
+      angleList.style.display = "block";
+      angleList.innerText = "";
+
+      // Crear los elementos de la lista (li)
+      const shoulderAngleLi = document.createElement("li");
+      shoulderAngleLi.textContent = `Ángulo interno entre los Hombros: ${shoulderAngle.toFixed(
+        2
+      )}°`;
+
+      const hipAngleLi = document.createElement("li");
+      hipAngleLi.textContent = `Ángulo interno entre las Caderas: ${hipAngle.toFixed(
+        2
+      )}°`;
+
+      // Agregar los elementos li a la lista ol
+      angleList.appendChild(shoulderAngleLi);
+      angleList.appendChild(hipAngleLi);
+      containerLive.style.display = "none";
+      document.getElementById("generateButton").style.display = "block";
+    }
+    if (points.length >= 1) {
+      const removeButton = document.querySelector(".remove-button");
+      removeButton.style.display = "block";
+    }
+  }
+});
+
+// Función para calcular el ángulo interno y dibujar en el canvas
+function calculateAngleAndDraw(point1, point2, isShoulder) {
+  // Dibuja la línea entre los puntos seleccionados
+  ctx.beginPath();
+  ctx.moveTo(point1.x, point1.y);
+  ctx.lineTo(point2.x, point2.y);
+  ctx.strokeStyle = "green";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+
+  // Línea horizontal de referencia
+  const referenceY = isShoulder ? point1.y : points[2].y; // Toma el penúltimo punto como referencia para la cadera
+  ctx.beginPath();
+  ctx.moveTo(point1.x, referenceY);
+  ctx.lineTo(point2.x, referenceY);
+  ctx.strokeStyle = "red";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+
+  // Vectores para el cálculo del ángulo
+  const vector1 = { x: point2.x - point1.x, y: point2.y - point1.y };
+  const vector2 = { x: point2.x - point1.x, y: 0 };
+
+  // Cálculo del producto punto y las normas de los vectores
+  const dotProduct = vector1.x * vector2.x + vector1.y * vector2.y;
+  const norm1 = Math.sqrt(vector1.x ** 2 + vector1.y ** 2);
+  const norm2 = Math.sqrt(vector2.x ** 2 + 0);
+
+  // Cálculo del ángulo en radianes y conversión a grados
+  const cosTheta = dotProduct / (norm1 * norm2);
+  const angleRadians = Math.acos(Math.min(Math.max(cosTheta, -1), 1)); // Clipping para evitar errores numéricos
+  const angleDegrees = (angleRadians * 180) / Math.PI;
+
+  // Ángulo interno (menor entre el ángulo calculado y su complemento)
+  const internalAngle = Math.min(angleDegrees, 180 - angleDegrees);
+
+  // Centro y dimensiones de la elipse para dibujar el ángulo
+  const centerX = (point1.x + point2.x) / 2;
+  const centerY = (point1.y + referenceY) / 2;
+  const distance =
+    Math.sqrt((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2) / 3;
+
+  // Configuración del ángulo de inicio y fin en función de la posición de los puntos
+  const startAngle = point1.y > referenceY ? 0 : Math.PI;
+  const endAngle = startAngle + (internalAngle * Math.PI) / 180;
+
+  // Dibuja el arco representando el ángulo interno
+  ctx.beginPath();
+  ctx.ellipse(centerX, centerY, distance, distance, 0, startAngle, endAngle);
+  ctx.strokeStyle = "blue";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+
+  return internalAngle;
+}
+
+document.getElementById("captureImageButton").addEventListener("click", () => {
+  event.preventDefault();
+  captureImageFromFeed();
+});
+
+function captureImageFromFeed() {
+  // Crear un canvas temporal
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+
+  // Establecer el tamaño del canvas temporal igual al tamaño del video o del output_canvas
+  canvas.width = videoElement.videoWidth;
+  canvas.height = videoElement.videoHeight;
+
+  // Dibujar el video en el canvas temporal
+  context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+  // Dibujar el contenido del output_canvas encima del video
+  const outputCanvas = document.getElementById("output_canvas");
+  context.drawImage(outputCanvas, 0, 0, canvas.width, canvas.height);
+
+  // Convertir el canvas temporal en una URL de imagen
+  const imageURL = canvas.toDataURL("image/png");
+
+  // Asignar la URL de imagen al elemento img para mostrar la captura
+  const capturedImage = document.getElementById("capturedImage");
+  capturedImage.src = imageURL;
+  capturedImage.style.display = "block"; // Mostrar la imagen capturada
+  document.getElementById("generateButton").style.display = "block";
+}

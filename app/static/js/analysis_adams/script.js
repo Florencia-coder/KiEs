@@ -1,4 +1,3 @@
-console.log("pagina cargada");
 let points = [];
 let scale = 1;
 
@@ -109,6 +108,9 @@ function analyzePoints() {
   const removeButton = document.querySelector(".remove-button");
 
   removeButton.style.display = "none";
+  if(points.length < 12){
+    return alert("Agrege la información necesaria")
+  }
 
   for (let i = 0; i < points.length - 2; i++) {
     const { x: x1, y: y1 } = points[i];
@@ -126,7 +128,7 @@ function analyzePoints() {
 
   // Dibujar los puntos que estan entre ambas asimetrias
   drawSymmetryLines(asymmetries);
-
+  document.getElementById("generateButton").style.display = "block"
   // Mostrar resultado de asimetria
   const resultList = document.getElementById("asymmetryList");
   resultList.innerHTML = ""; // borrar resultados anteriores
@@ -173,6 +175,7 @@ function removeImage() {
   document.querySelector(".remove-button").style.display = "none";
   document.getElementById("infoImgBox").style.display = "block";
   document.getElementById("infoBox").style.display = "none";
+  document.getElementById("generateButton").style.display ="none"
 
   const imageContainer = document.querySelector(".image-container");
   imageContainer.style.display = "none"; // Ocultar contenedor de imagen

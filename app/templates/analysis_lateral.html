@@ -19,9 +19,12 @@
   </head>
   <body>
     <div class="container">
+      <!-- Header -->
       <header>
         <h1 class="text-center">ANÁLISIS LATERAL</h1>
       </header>
+
+      <!-- Info Boxes -->
       <div class="info-img-box" id="infoImgBox">
         <i class="bi bi-info-circle"></i>
         La imagen de la persona debe ser de cuerpo entero de pie, de vista
@@ -34,6 +37,8 @@
         cráneo, acromion de articulación del hombro, parte superior de cresta
         iliaca y zona medial de articulación de la rodilla
       </div>
+
+      <!-- Image Upload and Preview Section -->
       <div class="container_img">
         <div class="card" id="uploadCard">
           <label class="custom-upload">
@@ -48,6 +53,7 @@
             Haz clic aquí para seleccionar una imagen
           </label>
         </div>
+
         <div class="text-center">
           <div class="image-container" id="imageContainer">
             <img
@@ -59,17 +65,17 @@
             />
             <button class="remove-img" onclick="removeImage()" id="removeImg">
               <i class="bi bi-x-circle"></i>
-              <!-- Icono de cerrar -->
             </button>
           </div>
         </div>
+
+        <!-- Control Buttons -->
         <button
           type="button"
           class="btn btn-light btn-bottom-left remove-button"
           onclick="removePoint()"
         >
-          <i class="bi bi-arrow-left"></i>
-          Remover ultimo punto
+          <i class="bi bi-arrow-left"></i> Remover ultimo punto
         </button>
         <button
           type="submit"
@@ -80,9 +86,20 @@
           ANALIZAR PUNTOS
         </button>
       </div>
+
+      <!-- Result Section -->
       <div id="result">
-        <ul id="asymmetryList" class="asymetry-list"></ul>
+        <ul id="asymmetryList" class="asymmetry-list"></ul>
       </div>
+
+      <!-- Save Analysis and Back Button -->
+      <button
+        type="submit"
+        id="generateButton"
+        class="button btn btn-outline-success btn-custom"
+      >
+        GUARDAR ANÁLISIS
+      </button>
       <a
         href="{{ url_for('analysis_selection') }}"
         class="btn btn-light btn-bottom-left"
@@ -90,6 +107,7 @@
         <i class="bi bi-arrow-left"></i> Volver a sección de análisis
       </a>
     </div>
+
     <!-- Scripts -->
     <script src="..\static\js\analisys_lateral\script.js"></script>
     <!-- Botón oculto para análisis -->
@@ -99,10 +117,109 @@
     <footer>
       <p>&copy; 2024 KiEs. Todos los derechos reservados.</p>
     </footer>
+
+    <!-- External Libraries -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- PDF Generation Script -->
+  <script>
+      const pacienteDatos = JSON.parse('{{ paciente | tojson | safe }}');
+
+      function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Añadir título estilizado, centrado y subrayado
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.text("Análisis de Imagen Lateral", 105, 20, { align: "center" });
+        doc.setLineWidth(0.5);
+        doc.line(63, 23, 147, 23); // Subrayado del título
+
+        // Añadir logo en la esquina superior izquierda
+        const logoImg = new Image();
+        logoImg.src = "static/img/logo.png";
+
+        logoImg.onload = function () {
+          const logoWidth = 20;
+          const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
+          doc.addImage(logoImg, "PNG", 10, 10, logoWidth, logoHeight);
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(8);
+          doc.text("KiEs", 20, 36, { align: "center" });
+
+          // Información del paciente
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(12);
+          doc.text("Datos del Paciente:", 15, 45);
+          doc.setLineWidth(0.3);
+          doc.line(15, 48, 52, 48); // Línea debajo de "Datos del Paciente"
+
+          // Mostrar la información del paciente con margen a la izquierda
+          doc.setFontSize(10);
+          const datosPacienteY = 55;
+          const lineSpacing = 8;
+          doc.text(`DNI: ${pacienteDatos["dni"]}`, 15, datosPacienteY);
+          doc.text(`Nombre: ${pacienteDatos.name}`, 15, datosPacienteY + lineSpacing);
+          doc.text(`Edad: ${pacienteDatos.age}`, 15, datosPacienteY + 2 * lineSpacing);
+          doc.text(`Altura: ${pacienteDatos.height}`, 15, datosPacienteY + 3 * lineSpacing);
+          doc.text(`Peso: ${pacienteDatos.weight}`, 15, datosPacienteY + 4 * lineSpacing);
+          doc.text(`Fecha de consulta: ${pacienteDatos.consultaDate}`, 15, datosPacienteY + 5 * lineSpacing);
+          doc.text(`Historial: ${pacienteDatos.historial}`, 15, datosPacienteY + 6 * lineSpacing);
+
+          // Separador entre los datos del paciente y la imagen de análisis
+          const imageYPosition = datosPacienteY + 6 * lineSpacing + 10;
+          doc.line(15, imageYPosition, 195, imageYPosition); // Línea separadora
+
+          // Capturar la imagen del análisis y agregarla al PDF
+          const imageContainer = document.getElementById("imageContainer");
+          html2canvas(imageContainer).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            doc.addImage(imgData, "PNG", 15, imageYPosition + 5, 180, 120);
+
+            // Agregar una línea separadora después de la imagen
+            const lineYPosition = imageYPosition + 130; // Ajusta según sea necesario
+            doc.setLineWidth(0.3);
+            doc.line(15, lineYPosition, 195, lineYPosition); // Línea separadora
+            
+            doc.setFontSize(12);
+            // Verificación y cálculo de ángulos
+            if (points.length >= 3) {
+              const anguloCervical = calcularAngulo(points[0], points[1], points[2]);
+              const evaluacionCervical = evaluarCervical(anguloCervical);
+              doc.text(
+                `Ángulo Cervical: ${anguloCervical.toFixed(2)}° - ${evaluacionCervical}`,
+                15,
+                imageYPosition + 135
+              );
+
+              if (points.length === 4) {
+                const anguloDorsal = calcularAngulo(points[1], points[2], points[3]);
+                const evaluacionDorsal = evaluarDorsal(anguloDorsal);
+                doc.text(
+                  `Ángulo Dorsal: ${anguloDorsal.toFixed(2)}° - ${evaluacionDorsal}`,
+                  15,
+                  imageYPosition + 145
+                );
+              }
+            }
+
+            // Guardar el PDF
+        doc.save("Análisis_lateral.pdf");
+          });
+        };
+      }
+
+      document.getElementById("generateButton").addEventListener("click", (event) => {
+        event.preventDefault();
+        generatePDF();
+      });
+    </script>
   </body>
 </html>
