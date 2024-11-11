@@ -103,39 +103,31 @@ function markPoint(event) {
 }
 
 function analyzePoints() {
-  const asymmetries = [];
-  const symmetries = []; // Store symmetrical points
   const removeButton = document.querySelector(".remove-button");
 
   removeButton.style.display = "none";
-  if(points.length < 12){
-    return alert("Agrege la información necesaria")
-  }
 
-  for (let i = 0; i < points.length - 2; i++) {
-    const { x: x1, y: y1 } = points[i];
-    const { x: x2, y: y2 } = points[i + 1];
-    const { x: x3, y: y3 } = points[i + 2];
+  // Revisar simetría de apófisis espinosas en el eje Y
+  for (let i = 0; i < points.length - 1; i++) {
+    const { x: x1 } = points[i];
+    const { x: x2 } = points[i + 1];
 
-    const angle1 = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
-    const angle2 = Math.atan2(y3 - y2, x3 - x2) * (180 / Math.PI);
-    if (Math.abs(angle2 - angle1) > 5) {
-      asymmetries.push([i + 1, i + 2]);
-    } else {
-      symmetries.push([i, i + 1]); // Store symmetrical points
+    // Comprobar si los puntos son simétricos en el eje Y con una tolerancia de 5 px
+    if (Math.abs(x1 - x2) > 10) { 
+      asymmetries.push([i, i + 1]);
     }
   }
 
-  // Dibujar los puntos que estan entre ambas asimetrias
+  // Dibujar líneas para visualizar las asimetrías
   drawSymmetryLines(asymmetries);
-  document.getElementById("generateButton").style.display = "block"
-  // Mostrar resultado de asimetria
+
+  // Mostrar resultados de asimetría
   const resultList = document.getElementById("asymmetryList");
-  resultList.innerHTML = ""; // borrar resultados anteriores
+  resultList.innerHTML = ""; // Limpiar resultados anteriores
   if (asymmetries.length > 0) {
     asymmetries.forEach(([point1, point2]) => {
       const listItem = document.createElement("li");
-      listItem.textContent = `Asimetría entre los puntos ${point1} y ${point2}`;
+      listItem.textContent =  `Asimetría detectada entre los puntos ${point1 + 1} y ${point2 + 1} `;
       resultList.appendChild(listItem);
     });
   } else {
