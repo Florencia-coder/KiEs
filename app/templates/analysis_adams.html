@@ -113,7 +113,7 @@
 
     <!-- Función generarPDF -->
     <script>
-      const pacienteDatos = JSON.parse("{{ paciente | tojson | safe }}");
+      const pacienteDatos = JSON.parse('{{ paciente | tojson | safe }}');
       function generarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
