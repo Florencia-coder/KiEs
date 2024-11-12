@@ -63,6 +63,15 @@ h1 {
   align-items: center;
 }
 
+.container-input{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.container-input label{
+  align-self: flex-start;
+  padding-left: 14px;
+}
 .form {
   padding-top: 22px;
   width: 100%;
@@ -87,8 +96,8 @@ button {
 
 .input-custom {
   width: 100%; /* Todos los inputs ocuparán el 100% del ancho disponible */
-  max-width: 500px; /* Puedes ajustar este valor para limitar el tamaño máximo */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  align-self: self-start;
 }
 
 .input-custom:focus {
@@ -171,8 +180,8 @@ footer {
     padding-top: 8px;
     gap: 8px;
   }
-
-  .input-custom {
+  
+  .input-custom, label {
     font-size: 10px;
   }
 

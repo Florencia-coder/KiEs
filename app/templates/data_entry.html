@@ -27,56 +27,72 @@
         <h1 class="text-center">DATOS DEL PACIENTE</h1>
       </header>
       <form action="{{ url_for('data_entry') }}" method="POST" class="form">
-        <input
-          type="text"
-          id="dni"
-          name="dni"
-          required
-          class="form-control input-custom"
-          placeholder="ID o DNI"
-          pattern="\d{7,10}"
-          title="El DNI debe contener entre 7 y 10 dígitos."
-        />
+        <div class="container-input">
+          <label for="dni">ID o DNI: <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="dni"
+            name="dni"
+            required
+            class="form-control input-custom"
+            placeholder="Ingrese ID o DNI..."
+            pattern="\d{7,10}"
+            title="El DNI debe contener entre 7 y 10 dígitos."
+          />
+        </div>
+        <div class="container-input">
+        <label for="name">NOMBRE COMPLETO: </label>
         <input
           type="text"
           id="name"
           name="name"
           class="form-control input-custom"
-          placeholder="Nombre Completo"
+          placeholder="Ingrese nombre/s y apellido/s..."
           pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
           title="El nombre solo debe contener letras y espacios."
         />
+      </div>
+      <div class="container-input">
+        <label for="age">EDAD: </label>
         <input
           type="number"
           id="age"
           name="age"
           class="form-control input-custom"
-          placeholder="Edad"
+          placeholder="Ingrese una edad..."
           min="0"
           max="120"
           title="La edad debe estar entre 0 y 120 años."
         />
+      </div>
+      <div class="container-input">
+        <label for="height">ALTURA (cm):</label>
         <input
           type="number"
           id="height"
           name="height"
-          required
           class="form-control input-custom"
-          placeholder="Altura (cm)"
+          placeholder="Ingrese una altura en centimetros..."
           min="50"
           max="250"
           title="La altura debe estar entre 50 cm y 250 cm."
         />
+      </div>
+      <div class="container-input">
+        <label for="weight">PESO (kg):</label>
         <input
           type="number"
           id="weight"
           name="weight"
           class="form-control input-custom"
-          placeholder="Peso (kg)"
+          placeholder="Ingrese un peso en kilogramos ..."
           min="1"
           max="300"
           title="El peso debe estar entre 1 kg y 300 kg."
         />
+      </div>
+      <div class="container-input">
+        <label for="consultaDate">FECHA DE CONSULTA: <span class="text-danger">*</span></label>
         <input
           type="date"
           id="consultaDate"
@@ -84,13 +100,17 @@
           required
           class="form-control input-custom"
         />
+      </div>
+      <div class="container-input">
+        <label for="historial">HISTORIAL MÉDICO: </label>
         <textarea
           id="historial"
           name="historial"
           class="form-control input-custom"
-          placeholder="Historial Médico"
+          placeholder="Ingrese su historial médico..."
           rows="5"
         ></textarea>
+      </div>
         <button type="submit" class="button btn-custom">
           GUARDAR Y CONTINUAR A SELECCION DE ANÁLISIS
         </button>
@@ -107,11 +127,12 @@
 
     <!-- Script para establecer la fecha de consulta automáticamente -->
     <script>
+      const consultaDate = document.getElementById("consultaDate");
       document.addEventListener("DOMContentLoaded", function () {
         // Obtiene la fecha actual
         var today = new Date().toISOString().split("T")[0];
         // Establece el valor del campo fecha de consulta al valor actual
-        document.getElementById("consultaDate").value = today;
+        consultaDate.value = today;
       });
     </script>
 
