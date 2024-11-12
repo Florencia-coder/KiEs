@@ -158,6 +158,7 @@
       const canvasElement = document.getElementById("output_canvas");
       const ctx2 = canvasElement.getContext("2d");
       let capturedImageData = null;
+      let isRearCamera = false
 
       navigator.mediaDevices
         .getUserMedia({
@@ -169,7 +170,7 @@
 
           // Verificar si es la cámara trasera
           const track = stream.getVideoTracks()[0];
-          const isRearCamera = track.getSettings().facingMode === "environment";
+          isRearCamera = track.getSettings().facingMode === "environment";
 
           // Aplicar la transformación solo si es la cámara trasera
           if (isRearCamera) {
@@ -370,7 +371,9 @@
 
         // Reflejar la imagen horizontalmente
         context.translate(canvas.width, 0); // Desplazar el contexto al borde derecho
-        context.scale(-1, 1); // Escalar en -1 en el eje X para reflejar
+        if(!isRearCamera){
+          context.scale(-1, 1); // Escalar en -1 en el eje X para reflejar
+        }
 
         // Dibujar el video en el canvas temporal
         context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
