@@ -38,23 +38,40 @@ function previewImage(event) {
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
 
-      const maxWidth = 800; // Ancho máximo deseado
-      const maxHeight = 500; // Alto máximo deseado
+      // Determinar maxWidth y maxHeight según el ancho de pantalla
+      let maxWidth, maxHeight;
+      if (window.innerWidth < 768) { // Dispositivo móvil
+        maxWidth = 250;
+        maxHeight = 250;
+      } else if (window.innerWidth < 1024) { // Pa  ntallas medianas (tablet)
+        maxWidth = 400;
+        maxHeight = 350;
+      } else { // Pantallas grandes (desktop)
+        maxWidth = 600;
+        maxHeight = 500;
+      }
       let width = img.width;
       let height = img.height;
-
+      console.log({width});
+      console.log({height});
+      
       // Escalar la imagen manteniendo la relación de aspecto
       if (width > height) {
         if (width > maxWidth) {
           height = Math.round((height * maxWidth) / width);
           width = maxWidth;
+          console.log("heigth cuando es horizontal", height);
+          console.log("width cuando es horizontal", width);
         }
       } else {
         if (height > maxHeight) {
           width = Math.round((width * maxHeight) / height);
           height = maxHeight;
+          console.log("heigth cuando es vertical", height);
+          console.log("widht cuando es vertical", width);
         }
       }
+
 
       canvas.width = width;
       canvas.height = height;

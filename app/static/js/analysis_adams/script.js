@@ -35,7 +35,6 @@ function previewImage(event) {
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
 
-      // Determinar maxWidth y maxHeight según el ancho de pantalla
       let maxWidth, maxHeight;
       if (window.innerWidth < 768) { // Dispositivo móvil
         maxWidth = 250;
@@ -49,23 +48,17 @@ function previewImage(event) {
       }
       let width = img.width;
       let height = img.height;
-      console.log({width});
-      console.log({height});
       
       // Escalar la imagen manteniendo la relación de aspecto
       if (width > height) {
         if (width > maxWidth) {
           height = Math.round((height * maxWidth) / width);
           width = maxWidth;
-          console.log("heigth cuando es horizontal", height);
-          console.log("width cuando es horizontal", width);
         }
       } else {
         if (height > maxHeight) {
           width = Math.round((width * maxHeight) / height);
           height = maxHeight;
-          console.log("heigth cuando es vertical", height);
-          console.log("widht cuando es vertical", width);
         }
       }
 

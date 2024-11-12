@@ -235,24 +235,39 @@ function handleImageUpload(event) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         points = [];
 
-        // Calcular dimensiones para mantener la proporción de la imagen
-        const imgWidth = uploadedImage.width;
-        const imgHeight = uploadedImage.height;
-        const aspectRatio = imgWidth / imgHeight;
-
-        let drawWidth, drawHeight;
-        if (canvas.width / canvas.height > aspectRatio) {
-          drawHeight = canvas.height;
-          drawWidth = canvas.height * aspectRatio;
+        let maxWidth, maxHeight;
+        if (window.innerWidth < 768) {
+          // Dispositivo móvil
+          maxWidth = 250;
+          maxHeight = 250;
+        } else if (window.innerWidth < 1024) {
+          // Pa  ntallas medianas (tablet)
+          maxWidth = 400;
+          maxHeight = 350;
         } else {
-          drawWidth = canvas.width;
-          drawHeight = canvas.width / aspectRatio;
+          // Pantallas grandes (desktop)
+          maxWidth = 600;
+          maxHeight = 500;
+        }
+        let width = uploadedImage.width;
+        let height = uploadedImage.height;
+
+        // Escalar la imagen manteniendo la relación de aspecto
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
         }
 
-        // Dibujar la imagen en el canvas centrada
-        const xOffset = (canvas.width - drawWidth) / 2;
-        const yOffset = (canvas.height - drawHeight) / 2;
-        ctx.drawImage(uploadedImage, xOffset, yOffset, drawWidth, drawHeight);
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(uploadedImage, 0, 0, width, height);
 
         // Opcional: Restablecer el botón "analizar" y otros elementos
         analyzeButton.style.display = "none";
@@ -318,83 +333,124 @@ backButton.addEventListener("click", () => {
 });
 
 function generatePDF(imgData, shoulderAngle, hipAngle) {
-  console.log({ imgData });
-  console.log({ shoulderAngle });
-  console.log({ hipAngle });
-
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
+  let lineSpacing = 8;
+  const marginLeft = 15;
+  let yPosition = 20; // Posición inicial
 
-  // Añadir título estilizado, centrado y subrayado
-  doc.setFont("roboto", "bold");
-  doc.setFontSize(18);
-  doc.text("Análisis de Imagen Ventral-Dorsal", 105, 20, { align: "center" });
+  // Título del documento
+  doc.setFont("Helvetica", "bold");
+  doc.setFontSize(14);
+  doc.text("ANÁLISIS VENTRAL - DORSAL", 105, 20, {
+    align: "center",
+  });
   doc.setLineWidth(0.5);
-  doc.line(52, 23, 158, 23); // Subrayado del título
+  doc.line(67, 21, 142, 21); // Subrayado del título
 
+  // Agregar logo
   const logoImg = new Image();
   logoImg.src = "static/img/logo.png";
 
   logoImg.onload = function () {
-    const logoWidth = 20;
+    const logoWidth = 16;
     const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
-    doc.addImage(logoImg, "PNG", 10, 10, logoWidth, logoHeight);
+    doc.addImage(logoImg, "PNG", 10, 8, logoWidth, logoHeight);
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.text("KiEs", 20, 36, { align: "center" });
+    doc.setFontSize(6);
+    doc.text("KiEs", 18, 28, { align: "center" });
 
     // Información del paciente
-    doc.setFont("helvetica", "normal");
+    doc.setFont("Helvetica", "normal");
     doc.setFontSize(12);
-    doc.text("Datos del Paciente:", 15, 45);
+    doc.text("DATOS DEL PACIENTE:", 15, 45);
     doc.setLineWidth(0.3);
-    doc.line(15, 48, 52, 48); // Línea debajo de "Datos del Paciente"
+    doc.line(15, 46, 62, 46); // Línea debajo de "DATOS DEL PACIENTE"
 
-    // Mostrar la información del paciente con margen a la izquierda
+    const datosPacienteY = 52;
+    lineSpacing = 4;
     doc.setFontSize(10);
-    const datosPacienteY = 55;
-    const lineSpacing = 5;
+    doc.setFont("Helvetica", "Oblique");
     doc.text(`DNI: ${pacienteDatos["dni"]}`, 15, datosPacienteY);
     doc.text(`Nombre: ${pacienteDatos.name}`, 15, datosPacienteY + lineSpacing);
-    doc.text(`Edad: ${pacienteDatos.age}`, 15, datosPacienteY + 2 * lineSpacing);
-    doc.text(`Altura: ${pacienteDatos.height}`, 15, datosPacienteY + 3 * lineSpacing);
-    doc.text(`Peso: ${pacienteDatos.weight}`, 15, datosPacienteY + 4 * lineSpacing);
-    doc.text(`Fecha de consulta: ${pacienteDatos.consultaDate}`, 15, datosPacienteY + 5 * lineSpacing);
-    doc.text(`Historial: ${pacienteDatos.historial}`, 15, datosPacienteY + 6 * lineSpacing);
+    doc.text(
+      `Edad: ${pacienteDatos.age}`,
+      15,
+      datosPacienteY + 2 * lineSpacing
+    );
+    doc.text(
+      `Altura: ${pacienteDatos.height}`,
+      15,
+      datosPacienteY + 3 * lineSpacing
+    );
+    doc.text(
+      `Peso: ${pacienteDatos.weight}`,
+      15,
+      datosPacienteY + 4 * lineSpacing
+    );
+    doc.text(
+      `Fecha de consulta: ${pacienteDatos.consultaDate}`,
+      15,
+      datosPacienteY + 5 * lineSpacing
+    );
+    doc.text(
+      `Historial: ${pacienteDatos.historial}`,
+      15,
+      datosPacienteY + 6 * lineSpacing
+    );
 
-    // Separador entre los datos del paciente y la imagen de análisis
-    const imageYPosition = datosPacienteY + 6 * lineSpacing + 10;
-    doc.line(15, imageYPosition, 195, imageYPosition); // Línea separadora
+    const imageYPosition = datosPacienteY + 6 * lineSpacing + 5; // Ajuste para la línea superior de la imagen
 
-    // Añadir imagen capturada del canvas
-    doc.addImage(imgData, "PNG", 15, imageYPosition + 5, 180, 120);
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const scaleFactor = 0.4;
 
-    // Agregar una línea separadora después de la imagen
-    const lineYPosition = imageYPosition + 130; // Ajusta según sea necesario
-    doc.setLineWidth(0.3);
-    doc.line(15, lineYPosition, 195, lineYPosition); // Línea separadora
+    let imgScaledWidth = pdfWidth * scaleFactor;
+    let imgScaledHeight = (imgHeight * imgScaledWidth) / imgWidth;
 
-    // Configuración de texto para puntos y líneas
+    const posX = (pdfWidth - imgScaledWidth) / 2;
+    const posY = imageYPosition + 5;
+
+    // Línea superior de la imagen
+    doc.line(15, imageYPosition, pdfWidth - 15, imageYPosition);
+
+    // Agregar la imagen escalada y centrada
+    const imgData = canvas.toDataURL("image/png");
+    doc.addImage(imgData, "PNG", posX, posY, imgScaledWidth, imgScaledHeight);
+
+    // Línea inferior de la imagen
+    const lineBelowImage = posY + imgScaledHeight + 5;
+    doc.line(15, lineBelowImage, pdfWidth - 15, lineBelowImage);
+
+    // Título "RESULTADOS DE ANÁLISIS" debajo de la imagen
+    doc.setFont("Helvetica", "normal");
     doc.setFontSize(12);
-    doc.setTextColor(50, 50, 50); // Color de texto gris oscuro
+    doc.text("RESULTADOS DE ANÁLISIS:", 15, lineBelowImage + 10);
+    doc.setLineWidth(0.3);
+    doc.line(15, lineBelowImage + 11, 71, lineBelowImage + 11);
+
+    // Lista de angulos
+    yPosition = lineBelowImage + 18;
+    doc.setFontSize(10);
+    doc.setFont("Helvetica", "Oblique");
 
     // Agregar detalles de puntos en el PDF
     if (points.length >= 4) {
-      doc.text(`Ángulos internos:`, 15,
-        imageYPosition + 140);
-        doc.setLineWidth(0.3);
-        doc.line(15, imageYPosition + 142 , 47, imageYPosition +142); // Línea debajo de "Datos del Paciente"
-        doc.setFontSize(10);
+      doc.text(`Ángulos internos:`, 15, yPosition - 1);
+      yPosition += lineSpacing;
       doc.text(
-        `Ángulo interno entre los Hombros: ${shoulderAngle.toFixed(2)}°`,
+        `• Ángulo interno entre los Hombros: ${shoulderAngle.toFixed(2)}°`,
         15,
-        imageYPosition + 150
+        yPosition
       );
+      yPosition += lineSpacing;
       doc.text(
-        `Ángulo interno entre las Caderas: ${hipAngle.toFixed(2)}°`,
+        `• Ángulo interno entre las Caderas: ${hipAngle.toFixed(2)}°`,
         15,
-        imageYPosition + 155
+        yPosition
       );
+      yPosition += lineSpacing;
     }
 
     // Guardar el PDF

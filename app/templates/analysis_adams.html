@@ -113,7 +113,7 @@
 
     <!-- Función generarPDF -->
     <script>
-      const pacienteDatos = JSON.parse('{{ paciente | tojson | safe }}');
+      const pacienteDatos = JSON.parse("{{ paciente | tojson | safe }}");
       function generarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -142,120 +142,119 @@
           doc.setFontSize(6);
           doc.text("KiEs", 18, 28, { align: "center" });
 
-                  // Información del paciente
-        doc.setFont("Helvetica", "normal");
-        doc.setFontSize(12);
-        doc.text("DATOS DEL PACIENTE:", 15, 45);
-        doc.setLineWidth(0.3);
-        doc.line(15, 46, 62, 46); // Línea debajo de "DATOS DEL PACIENTE"
-
-        const datosPacienteY = 52;
-        lineSpacing = 4;
-        doc.setFontSize(10);
-        doc.setFont("Helvetica", "Oblique");
-        doc.text(`DNI: ${pacienteDatos["dni"]}`, 15, datosPacienteY);
-        doc.text(
-          `Nombre: ${pacienteDatos.name}`,
-          15,
-          datosPacienteY + lineSpacing
-        );
-        doc.text(
-          `Edad: ${pacienteDatos.age}`,
-          15,
-          datosPacienteY + 2 * lineSpacing
-        );
-        doc.text(
-          `Altura: ${pacienteDatos.height}`,
-          15,
-          datosPacienteY + 3 * lineSpacing
-        );
-        doc.text(
-          `Peso: ${pacienteDatos.weight}`,
-          15,
-          datosPacienteY + 4 * lineSpacing
-        );
-        doc.text(
-          `Fecha de consulta: ${pacienteDatos.consultaDate}`,
-          15,
-          datosPacienteY + 5 * lineSpacing
-        );
-        doc.text(
-          `Historial: ${pacienteDatos.historial}`,
-          15,
-          datosPacienteY + 6 * lineSpacing
-        );
-
-        const imageYPosition = datosPacienteY + 6 * lineSpacing + 5; // Ajuste para la línea superior de la imagen
-
-        // Capturar la imagen del análisis y agregarla al PDF
-        const imageContainer = document.getElementById("imageContainer");
-        html2canvas(imageContainer).then((canvas) => {
-          const imgWidth = canvas.width;
-          const imgHeight = canvas.height;
-          const pdfWidth = doc.internal.pageSize.getWidth();
-          const scaleFactor = 0.4;
-
-          let imgScaledWidth = pdfWidth * scaleFactor;
-          let imgScaledHeight = (imgHeight * imgScaledWidth) / imgWidth;
-
-          const posX = (pdfWidth - imgScaledWidth) / 2;
-          const posY = imageYPosition + 5;
-
-          // Línea superior de la imagen
-          doc.line(15, imageYPosition, pdfWidth - 15, imageYPosition);
-
-          // Agregar la imagen escalada y centrada
-          const imgData = canvas.toDataURL("image/png");
-          doc.addImage(
-            imgData,
-            "PNG",
-            posX,
-            posY,
-            imgScaledWidth,
-            imgScaledHeight
-          );
-
-          // Línea inferior de la imagen
-          const lineBelowImage = posY + imgScaledHeight + 5;
-          doc.line(15, lineBelowImage, pdfWidth - 15, lineBelowImage);
-
-          // Título "RESULTADOS DE ANÁLISIS" debajo de la imagen
+          // Información del paciente
           doc.setFont("Helvetica", "normal");
           doc.setFontSize(12);
-          doc.text("RESULTADOS DE ANÁLISIS:", 15, lineBelowImage + 10);
+          doc.text("DATOS DEL PACIENTE:", 15, 45);
           doc.setLineWidth(0.3);
-          doc.line(15, lineBelowImage + 11, 70, lineBelowImage + 11);
+          doc.line(15, 46, 62, 46); // Línea debajo de "DATOS DEL PACIENTE"
 
-          // Lista de asimetrías
-          yPosition = lineBelowImage + 18;
+          const datosPacienteY = 52;
+          lineSpacing = 4;
           doc.setFontSize(10);
           doc.setFont("Helvetica", "Oblique");
+          doc.text(`DNI: ${pacienteDatos["dni"]}`, 15, datosPacienteY);
+          doc.text(
+            `Nombre: ${pacienteDatos.name}`,
+            15,
+            datosPacienteY + lineSpacing
+          );
+          doc.text(
+            `Edad: ${pacienteDatos.age}`,
+            15,
+            datosPacienteY + 2 * lineSpacing
+          );
+          doc.text(
+            `Altura: ${pacienteDatos.height}`,
+            15,
+            datosPacienteY + 3 * lineSpacing
+          );
+          doc.text(
+            `Peso: ${pacienteDatos.weight}`,
+            15,
+            datosPacienteY + 4 * lineSpacing
+          );
+          doc.text(
+            `Fecha de consulta: ${pacienteDatos.consultaDate}`,
+            15,
+            datosPacienteY + 5 * lineSpacing
+          );
+          doc.text(
+            `Historial: ${pacienteDatos.historial}`,
+            15,
+            datosPacienteY + 6 * lineSpacing
+          );
 
-          const asymmetries = Array.from(
-            document.getElementById("asymmetryList").children
-          ).map((li) => li.innerText);
+          const imageYPosition = datosPacienteY + 6 * lineSpacing + 5; // Ajuste para la línea superior de la imagen
 
-          if (asymmetries.length > 0) {
-            doc.text("Asimetrías detectadas:", 15, yPosition);
-            doc.setTextColor(100, 100, 100);
-            yPosition += lineSpacing;
+          // Capturar la imagen del análisis y agregarla al PDF
+          const imageContainer = document.getElementById("imageContainer");
+          html2canvas(imageContainer).then((canvas) => {
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
+            const pdfWidth = doc.internal.pageSize.getWidth();
+            const scaleFactor = 0.4;
 
-            asymmetries.forEach((asymmetry) => {
-              doc.text(`• ${asymmetry}`, 15, yPosition);
-              yPosition += lineSpacing;
-            });
-          } else {
-            doc.text(
-              "• No se detectaron asimetrías significativas.",
-              15,
-              yPosition
+            let imgScaledWidth = pdfWidth * scaleFactor;
+            let imgScaledHeight = (imgHeight * imgScaledWidth) / imgWidth;
+
+            const posX = (pdfWidth - imgScaledWidth) / 2;
+            const posY = imageYPosition + 5;
+
+            // Línea superior de la imagen
+            doc.line(15, imageYPosition, pdfWidth - 15, imageYPosition);
+
+            // Agregar la imagen escalada y centrada
+            const imgData = canvas.toDataURL("image/png");
+            doc.addImage(
+              imgData,
+              "PNG",
+              posX,
+              posY,
+              imgScaledWidth,
+              imgScaledHeight
             );
-          }
 
-          // Guardar el PDF
-          doc.save("Análisis_Apófisis_Espinosas.pdf");
-        });
-        }
+            // Línea inferior de la imagen
+            const lineBelowImage = posY + imgScaledHeight + 5;
+            doc.line(15, lineBelowImage, pdfWidth - 15, lineBelowImage);
+
+            // Título "RESULTADOS DE ANÁLISIS" debajo de la imagen
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(12);
+            doc.text("RESULTADOS DE ANÁLISIS:", 15, lineBelowImage + 10);
+            doc.setLineWidth(0.3);
+            doc.line(15, lineBelowImage + 11, 71, lineBelowImage + 11);
+
+            // Lista de asimetrías
+            yPosition = lineBelowImage + 18;
+            doc.setFontSize(10);
+            doc.setFont("Helvetica", "Oblique");
+
+            const asymmetries = Array.from(
+              document.getElementById("asymmetryList").children
+            ).map((li) => li.innerText);
+
+            if (asymmetries.length > 0) {
+              doc.text("Asimetrías detectadas:", 15, yPosition);
+              yPosition += lineSpacing;
+
+              asymmetries.forEach((asymmetry) => {
+                doc.text(`• ${asymmetry}`, 15, yPosition);
+                yPosition += lineSpacing;
+              });
+            } else {
+              doc.text(
+                "• No se detectaron asimetrías significativas.",
+                15,
+                yPosition
+              );
+            }
+
+            // Guardar el PDF
+            doc.save("Análisis_Apófisis_Espinosas.pdf");
+          });
+        };
       }
     </script>
   </body>

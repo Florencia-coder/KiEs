@@ -157,8 +157,8 @@ footer {
 .image-container {
   position: relative;
   cursor: crosshair; /* Cambiar el cursor para marcar */
-  width: 100%;
-  height: 500px;
+  width: fit-content;
+  height: fit-content;
   display: none; /* Ocultar contenedor inicialmente */
   margin: 20px auto 10px auto;
 }
