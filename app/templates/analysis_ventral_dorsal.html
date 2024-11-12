@@ -173,9 +173,9 @@
 
           // Aplicar la transformación solo si es la cámara trasera
           if (isRearCamera) {
-            video.style.transform = "scaleX(1)";
+            videoElement.style.transform = "scaleX(1)";
           } else {
-            video.style.transform = "scaleX(-1)"; // No voltear la cámara frontal
+            videoElement.style.transform = "scaleX(-1)"; // No voltear la cámara frontal
           }
         })
         .catch(function (error) {
