@@ -28,14 +28,14 @@
       </header>
       <form action="{{ url_for('data_entry') }}" method="POST" class="form">
         <div class="container-input">
-          <label for="dni">ID o DNI: <span class="text-danger">*</span></label>
+          <label for="dni">DNI: <span class="text-danger">* </span><span style="color: gray; font-style: oblique;">Campo obligatorio</span></label>
           <input
             type="text"
             id="dni"
             name="dni"
             required
             class="form-control input-custom"
-            placeholder="Ingrese ID o DNI..."
+            placeholder="Ingrese un DNI..."
             pattern="\d{7,10}"
             title="El DNI debe contener entre 7 y 10 dígitos."
           />
@@ -92,7 +92,7 @@
         />
       </div>
       <div class="container-input">
-        <label for="consultaDate">FECHA DE CONSULTA: <span class="text-danger">*</span></label>
+        <label for="consultaDate">FECHA DE CONSULTA: <span class="text-danger">* </span><span style="color: gray; font-style: oblique;">Campo obligatorio</span></label>
         <input
           type="date"
           id="consultaDate"

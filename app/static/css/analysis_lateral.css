@@ -107,20 +107,29 @@ footer {
   object-fit: contain;
 }
 
-.btn-bottom-left {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-}
-
 .remove-button {
+  align-items: center;
+  width: fit-content;
+  color:red;
   display: none;
   float: left; /* Alinea el botón a la izquierda */
   font-size: 12px; /* Tamaño más pequeño del texto */
   border: 0px; /* Borde del botón */
   cursor: pointer; /* Cambia el cursor al pasar por encima */
-  width: 200px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
+  padding: 0;
+  padding-right: 4px;
+  border: 0.5px solid red;
+  align-items: center;
+}
+
+.remove-button:hover{
+  color: white;
+  background-color: red;
+}
+
+.icon-remove{
+  font-size: 16px;
 }
 
 .remove-img {
@@ -140,6 +149,11 @@ footer {
   background-color: #063a32;
 }
 
+.btn-bottom-left {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
 .point {
   width: 10px;
   height: 10px;
@@ -358,7 +372,7 @@ footer {
   }
   .remove-button {
     font-size: xx-small;
-    width: 150px;
+    padding-right: 4px;
   }
   .asymmetry-list {
     font-size: 12px;

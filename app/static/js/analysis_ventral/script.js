@@ -179,12 +179,12 @@ function addAngleList(shoulderAngle, hipAngle) {
 
   // Crear los elementos de la lista (li)
   const shoulderAngleLi = document.createElement("li");
-  shoulderAngleLi.textContent = `Ángulo interno entre los hombros: ${shoulderAngle.toFixed(
+  shoulderAngleLi.textContent = `Se estima un ángulo interno entre los hombros de: ${shoulderAngle.toFixed(
     2
   )}°`;
 
   const hipAngleLi = document.createElement("li");
-  hipAngleLi.textContent = `Ángulo interno entre las caderas: ${hipAngle.toFixed(
+  hipAngleLi.textContent = `Se estima un ángulo interno entre las caderas de : ${hipAngle.toFixed(
     2
   )}°`;
 
@@ -389,7 +389,7 @@ function generatePDF(imgData, shoulderAngle, hipAngle) {
       datosPacienteY + 4 * lineSpacing
     );
     doc.text(
-      `Fecha de consulta: ${pacienteDatos.consultaDate}`,
+      `Fecha de análisis: ${pacienteDatos.consultaDate}`,
       15,
       datosPacienteY + 5 * lineSpacing
     );
@@ -454,7 +454,7 @@ function generatePDF(imgData, shoulderAngle, hipAngle) {
     }
 
     // Guardar el PDF
-    doc.save("Análisis_ventral_dorsal.pdf");
+    doc.save(`Análisis_ventral_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`);
   };
 }
 
@@ -484,7 +484,7 @@ canvas.addEventListener("click", (event) => {
     // Dibuja un círculo en el punto seleccionado
     ctx.beginPath();
     ctx.arc(x, y, 5, 0, 2 * Math.PI);
-    ctx.fillStyle = "green";
+    ctx.fillStyle = "red";
     ctx.fill();
     ctx.closePath();
 
@@ -500,12 +500,12 @@ canvas.addEventListener("click", (event) => {
 
       // Crear los elementos de la lista (li)
       const shoulderAngleLi = document.createElement("li");
-      shoulderAngleLi.textContent = `Ángulo interno entre los Hombros: ${shoulderAngle.toFixed(
+      shoulderAngleLi.textContent = `Se estima un ángulo interno entre los Hombros de: ${shoulderAngle.toFixed(
         2
       )}°`;
 
       const hipAngleLi = document.createElement("li");
-      hipAngleLi.textContent = `Ángulo interno entre las Caderas: ${hipAngle.toFixed(
+      hipAngleLi.textContent = `Se estima un ángulo interno entre las Caderas de: ${hipAngle.toFixed(
         2
       )}°`;
 
@@ -517,7 +517,7 @@ canvas.addEventListener("click", (event) => {
     }
     if (points.length >= 1) {
       const removeButton = document.querySelector(".remove-button");
-      removeButton.style.display = "block";
+      removeButton.style.display = "flex";
     }
   }
 });
@@ -528,7 +528,7 @@ function calculateAngleAndDraw(point1, point2, isShoulder) {
   ctx.beginPath();
   ctx.moveTo(point1.x, point1.y);
   ctx.lineTo(point2.x, point2.y);
-  ctx.strokeStyle = "green";
+  ctx.strokeStyle = "red";
   ctx.lineWidth = 2;
   ctx.stroke();
   ctx.closePath();
@@ -538,7 +538,7 @@ function calculateAngleAndDraw(point1, point2, isShoulder) {
   ctx.beginPath();
   ctx.moveTo(point1.x, referenceY);
   ctx.lineTo(point2.x, referenceY);
-  ctx.strokeStyle = "red";
+  ctx.strokeStyle = "green";
   ctx.lineWidth = 2;
   ctx.stroke();
   ctx.closePath();

@@ -117,7 +117,7 @@ function markPoint(event) {
   // Check if points array has at least one point and show the remove button
   const removeButton = document.querySelector(".remove-button");
   if (points.length >= 1) {
-    removeButton.style.display = "block";
+    removeButton.style.display = "flex";
   }
 }
 
@@ -229,9 +229,9 @@ function evaluarCervical(angulo) {
   if (angulo >= 160 && angulo <= 180) {
     return "Postura cervical: Dentro de rango normal (160 a 180 grados).";
   } else if (angulo < 160) {
-    return "Postura cervical: Hiperlordosis cervical (Ángulo menor a 160 grados).";
+    return "Postura cervical, se estima: Hiperlordosis cervical (Ángulo menor a 160 grados).";
   } else if (angulo > 180) {
-    return "Postura cervical: Hipocifosis cervical (Ángulo mayor a 180 grados).";
+    return "Postura cervical, se estima: Hipocifosis cervical (Ángulo mayor a 180 grados).";
   }
 }
 
@@ -240,9 +240,9 @@ function evaluarDorsal(angulo) {
   if (angulo >= 170 && angulo <= 180) {
     return "Postura dorsal: Dentro de rango normal (170 a 180 grados).";
   } else if (angulo < 170) {
-    return "Postura dorsal: Hipercifosis dorsal (Ángulo menor a 170 grados).";
+    return "Postura dorsal, se estima: Hipercifosis dorsal (Ángulo menor a 170 grados).";
   } else if (angulo > 180) {
-    return "Postura dorsal: Hipolordosis dorsal (Ángulo mayor a 180 grados).";
+    return "Postura dorsal, se estima: Hipolordosis dorsal (Ángulo mayor a 180 grados).";
   }
 }
 

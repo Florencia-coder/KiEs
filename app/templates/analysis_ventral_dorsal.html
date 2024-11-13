@@ -57,16 +57,12 @@
       </button>
       <div class="info-img-box" id="infoImgBox">
         <i class="bi bi-info-circle"></i>
-        La imagen de la persona debe ser de cuerpo entero con torso desnudo, o
-        con ropa ajustada contrastada con el fondo. Preferentemente de espalda a
-        la cámara.
+        La imagen de la persona debe mostrar las caderas y los hombros, preferentemente con el torso desnudo o con ropa ajustada contrastada con el fondo. Idealmente, la persona debería estar de espalda a la cámara.
       </div>
       <div class="info-box" id="infoBox">
         <i class="bi bi-info-circle"></i>
-        Debe marcar los primeros 2 puntos; a la altura del acromion de ambas
-        escápulas de la persona.Y los siguientes 2 puntos; a la altura del punto
-        más superior de las crestas ilíacas izquierda y derecha para realizar el
-        análisis.
+        Debe marcar los primeros 2 puntos: a la altura del acromion de ambas escápulas de la persona.
+Los siguientes 2 puntos: a la altura del punto superior de las crestas ilíacas izquierda y derecha para realizar el análisis.
       </div>
       <div class="container-card" id="containerCard">
         <div class="card">
@@ -98,7 +94,7 @@
           class="btn btn-light remove-button"
           onclick="handleRemoveLastPoint()"
         >
-          <i class="bi bi-arrow-left"></i>
+        <i class="bi bi-x icon-remove"></i>
           Remover ultimo punto
         </button>
         <button
@@ -270,7 +266,7 @@
           point2.x * canvasElement.width,
           point2.y * canvasElement.height
         );
-        ctx2.strokeStyle = "green";
+        ctx2.strokeStyle = "red";
         ctx2.lineWidth = 2;
         ctx2.stroke();
         ctx2.closePath();
@@ -282,7 +278,7 @@
         ctx2.beginPath();
         ctx2.moveTo(point1.x * canvasElement.width, referenceY);
         ctx2.lineTo(point2.x * canvasElement.width, referenceY);
-        ctx2.strokeStyle = "red";
+        ctx2.strokeStyle = "green";
         ctx2.lineWidth = 2;
         ctx2.stroke();
         ctx2.closePath();
@@ -472,7 +468,7 @@
             datosPacienteY + 4 * lineSpacing
           );
           doc.text(
-            `Fecha de consulta: ${pacienteDatos.consultaDate}`,
+            `Fecha de análisis: ${pacienteDatos.consultaDate}`,
             15,
             datosPacienteY + 5 * lineSpacing
           );
@@ -556,7 +552,7 @@
           yPosition += lineSpacing;
 
           // Guardar el PDF
-          doc.save("Análisis_ventral_dorsal.pdf");
+          doc.save(`Análisis_ventral_dorsal_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`);
         };
       }
     </script>

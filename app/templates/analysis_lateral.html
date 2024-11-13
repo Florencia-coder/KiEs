@@ -72,10 +72,10 @@
         <!-- Control Buttons -->
         <button
           type="button"
-          class="btn btn-light btn-bottom-left remove-button"
+          class="btn btn-light remove-button"
           onclick="removePoint()"
         >
-          <i class="bi bi-arrow-left"></i> Remover ultimo punto
+        <i class="bi bi-x icon-remove"></i> Remover ultimo punto
         </button>
         <button
           type="submit"
@@ -192,7 +192,7 @@
             datosPacienteY + 4 * lineSpacing
           );
           doc.text(
-            `Fecha de consulta: ${pacienteDatos.consultaDate}`,
+            `Fecha de análisis: ${pacienteDatos.consultaDate}`,
             15,
             datosPacienteY + 5 * lineSpacing
           );
@@ -271,7 +271,7 @@
             }
 
             // Guardar el PDF
-        doc.save("Análisis_lateral.pdf");
+        doc.save(`Análisis_lateral_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`);
           });
         };
       }

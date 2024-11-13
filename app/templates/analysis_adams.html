@@ -27,7 +27,7 @@
       </header>
       <div class="info-img-box" id="infoImgBox">
         <i class="bi bi-info-circle"></i>
-        La imagen de la persona debe ser de cuerpo entero, de frente a la misma,
+        La imagen de la persona debe ser de cuerpo entero, de frente a la cámara,
         realizando la postura del Test de Adams, con el torso desnudo para la
         apreciación visual de las apófisis.
       </div>
@@ -70,7 +70,7 @@
           class="btn btn-light remove-button"
           onclick="removePoint()"
         >
-          <i class="bi bi-arrow-left"></i>
+        <i class="bi bi-x icon-remove"></i>
           Remover ultimo punto
         </button>
         <button type="button" class="button" onclick="analyzePoints()">
@@ -175,7 +175,7 @@
             datosPacienteY + 4 * lineSpacing
           );
           doc.text(
-            `Fecha de consulta: ${pacienteDatos.consultaDate}`,
+            `Fecha de análisis: ${pacienteDatos.consultaDate}`,
             15,
             datosPacienteY + 5 * lineSpacing
           );
@@ -252,7 +252,7 @@
             }
 
             // Guardar el PDF
-            doc.save("Análisis_Apófisis_Espinosas.pdf");
+            doc.save(`Análisis_Apófisis_Espinosas_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`);
           });
         };
       }

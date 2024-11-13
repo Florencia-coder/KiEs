@@ -86,7 +86,7 @@ function previewImage(event) {
 function markPoint(event) {
   if (points.length >= 12) {
     alert("Se ha alcanzado el número máximo de puntos (12).");
-    return; // Exit the function if the limit is reached
+    return;
   }
 
   const image = event.target;
@@ -94,24 +94,32 @@ function markPoint(event) {
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
 
-  // Create a red dot
+  // Crear el punto (un div rojo) 
   const point = document.createElement("div");
   point.classList.add("point");
   point.style.left = `${x}px`;
   point.style.top = `${y}px`;
 
-  // Append the point to the image container
+  // Añadir número del punto (visualmente, no afecta a los datos)
+  const pointNumber = document.createElement("span");
+  pointNumber.classList.add("point-number");
+  pointNumber.innerText = points.length + 1; // Asignar el número correspondiente al punto
+  point.appendChild(pointNumber);
+
+  // Añadir el punto al contenedor de la imagen
   const imageContainer = document.querySelector(".image-container");
   imageContainer.appendChild(point);
 
-  // Store the coordinates in an array
+  // Guardar las coordenadas en el array
   points.push({ x, y });
-  // Check if points array has at least one point and show the remove button
+
+  // Mostrar el botón de eliminar si hay al menos un punto
   const removeButton = document.querySelector(".remove-button");
   if (points.length >= 1) {
-    removeButton.style.display = "block";
+    removeButton.style.display = "flex";
   }
 }
+
 
 function analyzePoints() {
   const removeButton = document.querySelector(".remove-button");
@@ -124,7 +132,7 @@ function analyzePoints() {
     const { x: x2 } = points[i + 1];
 
     // Comprobar si los puntos son simétricos en el eje Y con una tolerancia de 5 px
-    if (Math.abs(x1 - x2) > 10) { 
+    if (Math.abs(x1 - x2) > 5) { 
       asymmetries.push([i, i + 1]);
     }
   }
@@ -138,7 +146,7 @@ function analyzePoints() {
   if (asymmetries.length > 0) {
     asymmetries.forEach(([point1, point2]) => {
       const listItem = document.createElement("li");
-      listItem.textContent = `Asimetría detectada entre los puntos ${point1 + 1} y ${point2 + 1}`;
+      listItem.textContent = `Asimetría estimada entre los puntos ${point1 + 1} y ${point2 + 1}`;
       resultList.appendChild(listItem);
     });
   } else {
@@ -185,6 +193,7 @@ function removeImage() {
   document.querySelector(".remove-button").style.display = "none";
   document.getElementById("infoImgBox").style.display = "block";
   document.getElementById("infoBox").style.display = "none";
+  document.getElementById("generateButton").style.display = "none"
 
   const imageContainer = document.querySelector(".image-container");
   imageContainer.style.display = "none"; // Ocultar contenedor de imagen
