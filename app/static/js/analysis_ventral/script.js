@@ -454,7 +454,9 @@ function generatePDF(imgData, shoulderAngle, hipAngle) {
     }
 
     // Guardar el PDF
-    doc.save(`Análisis_ventral_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`);
+    doc.save(
+      `Análisis_ventral_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`
+    );
   };
 }
 
@@ -581,33 +583,33 @@ function calculateAngleAndDraw(point1, point2, isShoulder) {
   return internalAngle;
 }
 
-document.getElementById("captureImageButton").addEventListener("click", () => {
-  event.preventDefault();
-  captureImageFromFeed();
-});
+// document.getElementById("captureImageButton").addEventListener("click", () => {
+//   event.preventDefault();
+//   captureImageFromFeed();
+// });
 
-function captureImageFromFeed() {
-  // Crear un canvas temporal
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
+// function captureImageFromFeed() {
+//   // Crear un canvas temporal
+//   const canvas = document.createElement("canvas");
+//   const context = canvas.getContext("2d");
 
-  // Establecer el tamaño del canvas temporal igual al tamaño del video o del output_canvas
-  canvas.width = videoElement.videoWidth;
-  canvas.height = videoElement.videoHeight;
+//   // Establecer el tamaño del canvas temporal igual al tamaño del video o del output_canvas
+//   canvas.width = videoElement.videoWidth;
+//   canvas.height = videoElement.videoHeight;
 
-  // Dibujar el video en el canvas temporal
-  context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+//   // Dibujar el video en el canvas temporal
+//   context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-  // Dibujar el contenido del output_canvas encima del video
-  const outputCanvas = document.getElementById("output_canvas");
-  context.drawImage(outputCanvas, 0, 0, canvas.width, canvas.height);
+//   // Dibujar el contenido del output_canvas encima del video
+//   const outputCanvas = document.getElementById("output_canvas");
+//   context.drawImage(outputCanvas, 0, 0, canvas.width, canvas.height);
 
-  // Convertir el canvas temporal en una URL de imagen
-  const imageURL = canvas.toDataURL("image/png");
+//   // Convertir el canvas temporal en una URL de imagen
+//   const imageURL = canvas.toDataURL("image/png");
 
-  // Asignar la URL de imagen al elemento img para mostrar la captura
-  const capturedImage = document.getElementById("capturedImage");
-  capturedImage.src = imageURL;
-  capturedImage.style.display = "block"; // Mostrar la imagen capturada
-  document.getElementById("generateButton").style.display = "block";
-}
+//   // Asignar la URL de imagen al elemento img para mostrar la captura
+//   const capturedImage = document.getElementById("capturedImage");
+//   capturedImage.src = imageURL;
+//   capturedImage.style.display = "block"; // Mostrar la imagen capturada
+//   document.getElementById("generateButton").style.display = "block";
+// }

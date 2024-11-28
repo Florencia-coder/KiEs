@@ -1,6 +1,7 @@
 html,
 body {
   font-family: "Roboto", sans-serif;
+  font-size:62.5%;
   height: 100%; /* Asegura que el body ocupe todo el alto de la pantalla */
   margin: 0;
   padding: 0;
@@ -51,7 +52,7 @@ header {
 }
 
 h1 {
-  font-size: 26px; /* Tamaño del texto más grande */
+  font-size: 2.6rem; /* Tamaño del texto más grande */
   margin: 0;
   font-weight: 600;
   color: #063a32; /* Color más oscuro para contraste */
@@ -97,6 +98,7 @@ button {
 .input-custom {
   width: 100%; /* Todos los inputs ocuparán el 100% del ancho disponible */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 1.8rem;
   align-self: self-start;
 }
 
@@ -104,6 +106,10 @@ button {
   outline: none;
   border-color: #0c7631;
   box-shadow: 0 0 8px rgba(19, 154, 67, 0.5);
+}
+
+label{
+  font-size: 1.6rem;
 }
 .btn-custom:hover {
   background-color: #063a32;
@@ -124,75 +130,6 @@ footer {
   text-align: center;
   padding: 10px 0;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
-}
-
-/* Media Queries para Responsividad */
-
-/* Para pantallas medianas (tabletas) */
-@media (min-width: 577px) and (max-width: 1024px) {
-  .container {
-    width: 70%; /* Reduce el ancho */
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-bottom: 70px;
-  }
-
-  footer {
-    width: 70%;
-  }
-
-  header {
-    margin-left: -50px;
-    margin-right: -50px;
-    width: calc(100% + 100px);
-  }
-
-  h1 {
-    font-size: 22px; /* Ajusta tamaño de fuente */
-  }
-}
-
-/* Pantallas pequeñas (móviles) */
-@media (max-width: 576px) {
-  .container {
-    width: 90%; /* Aumenta el ancho en móviles para mayor espacio */
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  footer {
-    width: 90%;
-    padding: 5px 0px;
-    font-size: 12px;
-  }
-
-  header {
-    margin-left: -20px;
-    margin-right: -20px;
-    width: calc(100% + 40px);
-    padding: 10px 0;
-  }
-
-  h1 {
-    font-size: 18px; /* Reduce el tamaño de fuente en móviles */
-  }
-  .form {
-    padding-top: 8px;
-    gap: 8px;
-  }
-  
-  .input-custom, label {
-    font-size: 10px;
-  }
-
-  button {
-    padding: 8px 0; /* Ajusta el padding del botón */
-    font-size: xx-small;
-    border-width: 1px;
-    border-radius: 10px;
-  }
-
-  .btn-bottom-left {
-    font-size: xx-small;
-  }
+  font-size: small;
+  padding: 1rem 0;
 }

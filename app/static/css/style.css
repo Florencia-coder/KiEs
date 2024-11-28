@@ -1,6 +1,7 @@
 html,
 body {
   font-family: "Roboto", sans-serif;
+  font-size:62.5%;
   height: 100%; /* Asegura que el body ocupe todo el alto de la pantalla */
   margin: 0;
   padding: 0;
@@ -25,14 +26,12 @@ body {
   flex-grow: 1;
   width: 50%;
   background-color: #ffff;
-  padding-left: 200px;
-  padding-right: 200px;
   position: relative;
-  padding-bottom: 40px;
+  padding-bottom: 4rem;
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
-  gap: 30px;
+  gap: 3rem;
   justify-content: center;
   align-items: center;
 }
@@ -41,7 +40,7 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 2.2rem;
   align-items: center;
 }
 
@@ -50,7 +49,7 @@ body {
   background-color: transparent;
   color: #063a32;
   border: 2px solid #063a32;
-  padding: 15px 40px;
+  padding: 1.5rem 4rem;
   font-size: large;
   font-weight: 600;
   display: flex;
@@ -78,15 +77,15 @@ body {
 h1 {
   font-weight: 600;
   text-align: center;
-  font-size: 38px;
-  padding-bottom: inherit;
+  font-size: 3.8rem;
   opacity: 0;
   transform: translateY(-50px); /* Inicialmente fuera de pantalla */
   animation: fadeIn 2s ease-in-out forwards;
 }
 
 img {
-  width: 320px;
+  width: 32rem;
+  max-width: 75%;
   height: auto;
   opacity: 0;
   transform: translateY(-50px);
@@ -113,20 +112,21 @@ footer {
   color: #ffffff;
   width: 50%; /* Mismo ancho que el contenedor */
   text-align: center;
-  padding: 10px 0;
+  font-size: small;
+  padding: 1rem 0;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
 }
+
 
 /* Para pantallas pequeñas (celulares) */
 @media (max-width: 576px) {
   .container_home {
     flex-direction: column; /* Cambia a disposición vertical */
     width: 90%; /* Aumenta el ancho para aprovechar el espacio */
-    padding: 20px; /* Reduce el padding para pantallas pequeñas */
   }
 
   h1 {
-    font-size: 28px; /* Ajusta el tamaño del título */
+    font-size: 2.8rem; /* Ajusta el tamaño del título */
   }
 
   img {
@@ -149,15 +149,14 @@ footer {
 @media (min-width: 577px) and (max-width: 1024px) {
   .container_home {
     width: 80%; /* Ajusta el ancho */
-    padding: 30px; /* Ajusta el padding */
   }
 
   h1 {
-    font-size: 34px; /* Ajusta el tamaño del título */
+    font-size: 3.4rem; /* Ajusta el tamaño del título */
   }
 
   img {
-    width: 40%; /* Ajusta el tamaño de la imagen */
+    width: 35%; /* Ajusta el tamaño de la imagen */
   }
 
   .button {
