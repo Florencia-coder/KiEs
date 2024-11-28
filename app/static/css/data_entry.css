@@ -1,7 +1,7 @@
 html,
 body {
   font-family: "Roboto", sans-serif;
-  font-size:62.5%;
+  font-size: 62.5%;
   height: 100%; /* Asegura que el body ocupe todo el alto de la pantalla */
   margin: 0;
   padding: 0;
@@ -64,12 +64,12 @@ h1 {
   align-items: center;
 }
 
-.container-input{
+.container-input {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
-.container-input label{
+.container-input label {
   align-self: flex-start;
   padding-left: 14px;
 }
@@ -108,7 +108,7 @@ button {
   box-shadow: 0 0 8px rgba(19, 154, 67, 0.5);
 }
 
-label{
+label {
   font-size: 1.6rem;
 }
 .btn-custom:hover {
@@ -132,4 +132,64 @@ footer {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
   font-size: small;
   padding: 1rem 0;
+}
+
+@media (min-width: 577px) and (max-width: 1024px) {
+  .container {
+    width: 70%; /* Reduce el ancho */
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 70px;
+  }
+  footer {
+    width: 70%;
+  }
+  header {
+    margin-left: -50px;
+    margin-right: -50px;
+    width: calc(100% + 100px);
+  }
+  h1 {
+    font-size: 22px; /* Ajusta tamaño de fuente */
+  }
+}
+/* Pantallas pequeñas (móviles) */
+@media (max-width: 576px) {
+  .container {
+    width: 90%; /* Aumenta el ancho en móviles para mayor espacio */
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  footer {
+    width: 90%;
+    padding: 5px 0px;
+    font-size: 12px;
+  }
+  header {
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
+    padding: 10px 0;
+  }
+  h1 {
+    font-size: 18px; /* Reduce el tamaño de fuente en móviles */
+  }
+  .form {
+    padding-top: 8px;
+    gap: 8px;
+  }
+
+  .input-custom,
+  label {
+    font-size: 10px;
+  }
+  button {
+    padding: 8px 0; /* Ajusta el padding del botón */
+    font-size: xx-small;
+    border-width: 1px;
+    border-radius: 10px;
+  }
+  .btn-bottom-left {
+    font-size: xx-small;
+  }
 }
