@@ -57,17 +57,26 @@
       </button>
       <div class="info-img-box" id="infoImgBox">
         <i class="bi bi-info-circle"></i>
-        La imagen de la persona debe mostrar las caderas y los hombros, preferentemente con el torso desnudo o con ropa ajustada contrastada con el fondo. Idealmente, la persona debería estar de espalda a la cámara.
+        La imagen de la persona debe mostrar las caderas y los hombros,
+        preferentemente con el torso desnudo o con ropa ajustada contrastada con
+        el fondo. Idealmente, la persona debería estar de espalda a la cámara.
       </div>
       <div class="info-box" id="infoBox">
         <i class="bi bi-info-circle"></i>
-        Debe marcar los primeros 2 puntos: a la altura del acromion de ambas escápulas de la persona.
-Los siguientes 2 puntos: a la altura del punto superior de las crestas ilíacas izquierda y derecha para realizar el análisis.
+        Debe marcar los primeros 2 puntos: a la altura del acromion de ambas
+        escápulas de la persona. Los siguientes 2 puntos: a la altura del punto
+        superior de las crestas ilíacas izquierda y derecha para realizar el
+        análisis.
       </div>
       <div class="container-card" id="containerCard">
         <div class="card">
           <button type="button" id="uploadButton" class="custom-upload">
-            <i class="bi bi-camera"></i>
+            <img
+              src="{{ url_for('static', filename='img/monigoto.jpg') }}"
+              width="70px"
+              style="opacity: 0.7"
+              alt="Imagen de ejemplo"
+            />
             Subir imagen
           </button>
           <input
@@ -94,7 +103,7 @@ Los siguientes 2 puntos: a la altura del punto superior de las crestas ilíacas 
           class="btn btn-light remove-button"
           onclick="handleRemoveLastPoint()"
         >
-        <i class="bi bi-x icon-remove"></i>
+          <i class="bi bi-x icon-remove"></i>
           Remover ultimo punto
         </button>
         <button
@@ -154,7 +163,7 @@ Los siguientes 2 puntos: a la altura del punto superior de las crestas ilíacas 
       const canvasElement = document.getElementById("output_canvas");
       const ctx2 = canvasElement.getContext("2d");
       let capturedImageData = null;
-      let isRearCamera = false
+      let isRearCamera = false;
 
       navigator.mediaDevices
         .getUserMedia({
@@ -367,7 +376,7 @@ Los siguientes 2 puntos: a la altura del punto superior de las crestas ilíacas 
 
         // Reflejar la imagen horizontalmente
         context.translate(canvas.width, 0); // Desplazar el contexto al borde derecho
-        if(!isRearCamera){
+        if (!isRearCamera) {
           context.scale(-1, 1); // Escalar en -1 en el eje X para reflejar
         }
 
@@ -552,7 +561,9 @@ Los siguientes 2 puntos: a la altura del punto superior de las crestas ilíacas 
           yPosition += lineSpacing;
 
           // Guardar el PDF
-          doc.save(`Análisis_ventral_dorsal_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`);
+          doc.save(
+            `Análisis_ventral_dorsal_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`
+          );
         };
       }
     </script>
