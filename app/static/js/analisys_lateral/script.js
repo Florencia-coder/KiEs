@@ -1,21 +1,53 @@
 let points = [];
 let scale = 1;
 const removeButton = document.querySelector(".remove-button");
-// const pacienteDatos = JSON.parse('paciente');
-// const pacienteDatoss = JSON.parse('{"paciente"}');
+
 function removePoint() {
   points.pop();
-  // Remover último punto visual (elemento HTML)
   const imageContainer = document.querySelector(".image-container");
-  const lastPoint = imageContainer.querySelector(".point:last-child");
-  const removeButton = document.querySelector(".remove-button");
-  if (lastPoint) {
-    lastPoint.remove();
+  const lastPointContainer = imageContainer.querySelector(".point-container:last-child");
+  
+  if (lastPointContainer) {
+    lastPointContainer.remove(); // Eliminar el contenedor del punto y el número
   }
 
+  const removeButton = document.querySelector(".remove-button");
   if (points.length === 0) {
     removeButton.style.display = "none";
   }
+}
+function removeImage() {
+  const imagePreview = document.getElementById("imagePreview");
+  const removeImgButton = document.getElementById("removeImg");
+  const fileInput = document.getElementById("fileInput"); 
+  const imageContainer = document.querySelector(".image-container");
+
+  if (!fileInput) {
+    console.error("fileInput no encontrado");
+    return;
+  }
+
+  // Ocultar imagen y botón de eliminar
+  imagePreview.style.display = "none";
+  imagePreview.src = "#";
+  removeImgButton.style.display = "none";
+
+  // Limpiar el input de archivo
+  fileInput.value = "";
+  fileInput.disabled = false;
+
+  // Limpiar el array de puntos
+  points = [];
+  // Eliminar los textos (elementos <span>) en el contenedor de la imagen
+  const texts = imageContainer.querySelectorAll("span");
+  texts.forEach(text => text.remove());
+  imageContainer.querySelectorAll("span").forEach((text) => text.remove());
+  
+  // También puedes eliminar los puntos si es necesario
+  const pointsElements = imageContainer.querySelectorAll(".point-container");
+  pointsElements.forEach(point => point.remove());
+  // Limpiar el contenido del contenedor de imagen (eliminando cualquier otro elemento)
+  imageContainer.innerHTML = ""; 
 }
 
 function previewImage(event) {
@@ -43,7 +75,7 @@ function previewImage(event) {
       if (window.innerWidth < 768) { // Dispositivo móvil
         maxWidth = 250;
         maxHeight = 250;
-      } else if (window.innerWidth < 1024) { // Pa  ntallas medianas (tablet)
+      } else if (window.innerWidth < 1024) { // Pantallas medianas (tablet)
         maxWidth = 400;
         maxHeight = 350;
       } else { // Pantallas grandes (desktop)
@@ -52,26 +84,19 @@ function previewImage(event) {
       }
       let width = img.width;
       let height = img.height;
-      console.log({width});
-      console.log({height});
       
       // Escalar la imagen manteniendo la relación de aspecto
       if (width > height) {
         if (width > maxWidth) {
           height = Math.round((height * maxWidth) / width);
           width = maxWidth;
-          console.log("heigth cuando es horizontal", height);
-          console.log("width cuando es horizontal", width);
         }
       } else {
         if (height > maxHeight) {
           width = Math.round((width * maxHeight) / height);
           height = maxHeight;
-          console.log("heigth cuando es vertical", height);
-          console.log("widht cuando es vertical", width);
         }
       }
-
 
       canvas.width = width;
       canvas.height = height;
@@ -89,12 +114,17 @@ function previewImage(event) {
   points = [];
   imageContainer.querySelectorAll(".point").forEach((point) => point.remove());
   imageContainer.querySelectorAll(".line").forEach((line) => line.remove()); // Remove previous lines
+  // Eliminar los textos (elementos <span>) en el contenedor de la imagen
+  imageContainer.querySelectorAll("span").forEach((text) => text.remove());
 }
 
+
+// Función para manejar los clics y guardar los puntos
 function markPoint(event) {
-  if (points.length >= 4) {
-    alert("Se ha alcanzado el número máximo de puntos (4).");
-    return; // Exit the function if the limit is reached
+  // Limitar el número de puntos a 8
+  if (points.length >= 8) {
+    alert("Se ha alcanzado el número máximo de puntos (8).");
+    return; 
   }
 
   const image = event.target;
@@ -102,24 +132,64 @@ function markPoint(event) {
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
 
-  // Create a red dot
+  // Crear un contenedor para el punto y el número
+  const pointContainer = document.createElement("div");
+  pointContainer.classList.add("point-container");
+  pointContainer.style.position = "absolute";
+  pointContainer.style.left = `${x}px`;
+  pointContainer.style.top = `${y}px`;
+
+  // Crear el punto (div)
   const point = document.createElement("div");
   point.classList.add("point");
-  point.style.left = `${x}px`;
-  point.style.top = `${y}px`;
 
-  // Append the point to the image container
+  // Determinar el texto y color para cada punto
+  let label = "";
+  let labelColor = "";
+
+  if (points.length === 0) {
+    label = "1"; // Primer punto
+    labelColor = "blue"; // Azul
+  } else if (points.length === 1) {
+    label = "2"; // Segundo punto
+    labelColor = "blue"; // Azul
+  } else if (points.length === 2 || points.length === 3) {
+    label = `${points.length + 1}`; // Puntos 3 y 4
+    labelColor = "orange"; // Naranja
+  } else if (points.length === 4 || points.length === 5) {
+    label = `${points.length + 1}`; // Puntos 5 y 6
+    labelColor = "red"; // Rojo
+  } else if (points.length === 6 || points.length === 7) {
+    label = `${points.length + 1}`; // Puntos 7 y 8
+    labelColor = "violet"; // Violeta
+  }
+
+  // Crear el texto con el color correspondiente cerca del punto
+  const text = document.createElement("span");
+  text.textContent = label;
+  text.style.color = labelColor;
+  text.style.position = "relative";
+  text.style.left = "10px"; // Posición relativa respecto al punto
+  text.style.top = "10px";
+
+  // Añadir el punto y el texto al contenedor
+  pointContainer.appendChild(point);
+  pointContainer.appendChild(text);
+
+  // Añadir el contenedor a la imagen
   const imageContainer = document.querySelector(".image-container");
-  imageContainer.appendChild(point);
+  imageContainer.appendChild(pointContainer);
 
-  // Store the coordinates in an array
+  // Almacenar las coordenadas en un array
   points.push({ x, y });
-  // Check if points array has at least one point and show the remove button
+
+  // Mostrar el botón de eliminar si hay al menos un punto
   const removeButton = document.querySelector(".remove-button");
   if (points.length >= 1) {
     removeButton.style.display = "flex";
   }
 }
+
 
 function calcularAngulo(p1, p2, p3) {
   const angle1 = Math.atan2(p2.y - p1.y, p2.x - p1.x);
@@ -129,6 +199,26 @@ function calcularAngulo(p1, p2, p3) {
   // Normalizar el ángulo
   if (angle < 0) angle += 360;
   return angle;
+}
+// Extender las rectas y ajustar la longitud
+function extenderLinea(p1, p2, height) {
+  // Extendemos la línea en ambas direcciones
+  x1, y1 = p1
+  x2, y2 = p2
+  //  Calcular las pendientes de la línea
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  // Extendemos un poco las líneas, pero no tanto
+  if (dx !== 0) {
+    const m = dy / dx;
+    const xStart = p1.x - 50;
+    const yStart = Math.round(p1.y - m * (p1.x - xStart));
+    const xEnd = p2.x + 50;
+    const yEnd = Math.round(p2.y + m * (xEnd - p2.x));
+    return [{ x: xStart, y: yStart }, { x: xEnd, y: yEnd }];
+  } else {
+    return [{ x: p1.x, y: 0 }, { x: p1.x, y: height }];
+  }
 }
 
 function analyzePoints() {
@@ -183,16 +273,13 @@ function analyzePoints() {
   resultList.style.display = "block";
   resultList.innerHTML = ""; // Borrar resultados anteriores
   const cervicalItem = document.createElement("li");
-  cervicalItem.textContent = `Ángulo Cervical: ${anguloCervical.toFixed(
-    2
-  )} grados - ${evaluacionCervical}`;
+  cervicalItem.textContent = `Ángulo Cervical: ${anguloCervical.toFixed(2)} grados - ${evaluacionCervical}`;
+
   resultList.appendChild(cervicalItem);
 
   if (anguloDorsal !== null) {
     const dorsalItem = document.createElement("li");
-    dorsalItem.textContent = `Ángulo Dorsal: ${anguloDorsal.toFixed(
-      2
-    )} grados - ${evaluacionDorsal}`;
+    dorsalItem.textContent = `Ángulo Dorsal: ${anguloDorsal.toFixed(2)} grados - ${evaluacionDorsal}`;
     resultList.appendChild(dorsalItem);
   }
   document.getElementById("generateButton").style.display = "block";
@@ -205,7 +292,38 @@ function drawSymmetryLines(asymmetries) {
   const existingLines = document.querySelectorAll(".line");
   existingLines.forEach((line) => line.remove());
 
-  // Dibujar líneas entre todos los puntos consecutivos
+  // Dibujar línea vertical que pasa por P1 (primer punto)
+  if (points.length >= 1) {
+    const { x, y } = points[0]; // Coordenadas del primer punto
+    const verticalLine = document.createElement("div");
+    verticalLine.classList.add("line");
+    verticalLine.style.position = "absolute";
+    verticalLine.style.left = `${x}px`;
+    verticalLine.style.top = "0px"; // Empieza desde la parte superior de la imagen
+    verticalLine.style.height = `${imageContainer.offsetHeight}px`; // La línea llega hasta el fondo de la imagen
+    verticalLine.style.width = "2px"; // Ancho de la línea
+    verticalLine.style.backgroundColor = "blue"; // Color de la línea
+    imageContainer.appendChild(verticalLine);
+  }
+
+  // Dibujar líneas extendidas entre puntos 2-3, 4-5, 6-7
+  if (points.length >= 4) {
+    const lineNaranja = drawExtendedLine(points[2], points[3], "orange");
+    imageContainer.appendChild(lineNaranja);
+  }
+
+  if (points.length >= 6) {
+    const lineRoja = drawExtendedLine(points[4], points[5], "red"); // Cambié de blanco a rojo
+    imageContainer.appendChild(lineRoja);
+  }
+
+  if (points.length >= 8) {
+    const lineAzul = drawExtendedLine(points[6], points[7], "deepskyblue"); // Cambié de amarillo a azul eléctrico
+    imageContainer.appendChild(lineAzul);
+  }
+
+  // Dibujar las líneas entre los puntos que corresponden a asimetrías
+  // modifique algo acá
   for (let i = 0; i < points.length - 1; i++) {
     const { x: x1, y: y1 } = points[i];
     const { x: x2, y: y2 } = points[i + 1];
@@ -214,7 +332,6 @@ function drawSymmetryLines(asymmetries) {
     line.classList.add("line");
     const length = Math.hypot(x2 - x1, y2 - y1);
     line.style.width = `${length}px`;
-
     const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
     line.style.transform = `rotate(${angle}deg)`;
     line.style.left = `${x1}px`;
@@ -224,14 +341,53 @@ function drawSymmetryLines(asymmetries) {
   }
 }
 
+function drawExtendedLine(point1, point2, color) {
+  const { x: x1, y: y1 } = point1;
+  const { x: x2, y: y2 } = point2;
+
+  // Calcular la longitud de la línea
+  const length = Math.hypot(x2 - x1, y2 - y1);
+
+  // Calcular el ángulo de la línea en grados
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+
+  // Definir cuánto quieres extender la línea (puedes ajustar este valor según el tamaño que desees)
+  const extensionLength = 100;  // Valor para extender la línea más allá de los puntos
+
+  // Calcular las posiciones de inicio y fin extendidas
+  const extendedX1 = x1 - extensionLength * Math.cos(angle);
+  const extendedY1 = y1 - extensionLength * Math.sin(angle);
+  const extendedX2 = x2 + extensionLength * Math.cos(angle);
+  const extendedY2 = y2 + extensionLength * Math.sin(angle);
+
+  // Calcular la longitud total de la línea extendida
+  const extendedLength = Math.hypot(extendedX2 - extendedX1, extendedY2 - extendedY1);
+
+  // Crear un div para la línea
+  const line = document.createElement("div");
+  line.classList.add("line");
+
+  // Configurar el estilo de la línea
+  line.style.position = "absolute";
+  line.style.width = `${extendedLength}px`;
+  line.style.transform = `rotate(${angle}rad)`; // Rotar la línea según el ángulo
+  line.style.left = `${extendedX1}px`; // Posición horizontal de la línea extendida
+  line.style.top = `${extendedY1}px`; // Posición vertical de la línea extendida
+  line.style.backgroundColor = color; // Color de la línea
+
+  return line;
+}
+
+
+
 // Función para evaluar la postura cervical
 function evaluarCervical(angulo) {
   if (angulo >= 160 && angulo <= 180) {
     return "Postura cervical: Dentro de rango normal (160 a 180 grados).";
   } else if (angulo < 160) {
-    return "Postura cervical, se estima: Hiperlordosis cervical (Ángulo menor a 160 grados).";
+    return "Postura cervical: Hiperlordosis cervical (Ángulo menor a 160 grados).";
   } else if (angulo > 180) {
-    return "Postura cervical, se estima: Hipocifosis cervical (Ángulo mayor a 180 grados).";
+    return "Postura cervical: Hipocifosis cervical (Ángulo mayor a 180 grados).";
   }
 }
 
@@ -240,9 +396,9 @@ function evaluarDorsal(angulo) {
   if (angulo >= 170 && angulo <= 180) {
     return "Postura dorsal: Dentro de rango normal (170 a 180 grados).";
   } else if (angulo < 170) {
-    return "Postura dorsal, se estima: Hipercifosis dorsal (Ángulo menor a 170 grados).";
+    return "Postura dorsal: Hipercifosis dorsal (Ángulo menor a 170 grados).";
   } else if (angulo > 180) {
-    return "Postura dorsal, se estima: Hipolordosis dorsal (Ángulo mayor a 180 grados).";
+    return "Postura dorsal: Hipolordosis dorsal (Ángulo mayor a 180 grados).";
   }
 }
 
@@ -260,6 +416,8 @@ document.getElementById("removeImg").addEventListener("click", () => {
   document.getElementById("infoImgBox").style.display = "block";
   document.getElementById("uploadCard").style.display = "block";
   points = [];
+  label = [];
+  labelColor = [];
 });
 // document.getElementById("markImage").addEventListener("click", markPoint);
 // document.getElementById("analyzeBtn").addEventListener("click", analyzePoints);

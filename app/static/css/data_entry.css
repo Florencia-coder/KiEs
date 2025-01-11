@@ -121,7 +121,9 @@ label {
   bottom: 20px;
   left: 20px;
 }
-
+.btn-continue{
+  font-size: small;
+}
 /* Footer */
 footer {
   background-color: #063a32;
@@ -152,6 +154,9 @@ footer {
   h1 {
     font-size: 22px; /* Ajusta tamaño de fuente */
   }
+  .btn-continue{
+    font-size: x-small;
+  }
 }
 /* Pantallas pequeñas (móviles) */
 @media (max-width: 576px) {
@@ -173,6 +178,9 @@ footer {
   }
   h1 {
     font-size: 18px; /* Reduce el tamaño de fuente en móviles */
+  }
+  .btn-continue{
+    font-size: xx-small;
   }
   .form {
     padding-top: 8px;

@@ -33,9 +33,11 @@
       </div>
       <div class="info-box" id="infoBox">
         <i class="bi bi-info-circle"></i>
-        Marque los 4 puntos consecutivos en la zona medial de; la base del
+        Marque los 8 puntos consecutivos en la zona medial de; la base del
         cráneo, acromion de articulación del hombro, parte superior de cresta
-        iliaca y zona medial de articulación de la rodilla
+        iliaca,Zona medial del codo, Parte inferior de la cresta ilíaca,
+        zona medial de articulación de la rodilla, Zona medial de la articulación del tobillo 
+        y Punta de la 2ª falange del dedo gordo del pie
       </div>
 
       <!-- Image Upload and Preview Section -->
@@ -50,6 +52,12 @@
               accept="image/*"
               onchange="previewImage(event)"
             />
+            <img
+            src="{{ url_for('static', filename='img/monigoto_lateral.avif') }}"
+            width="30px"
+            style="opacity: 0.7"
+            alt="Imagen de ejemplo"
+          />
             Haz clic aquí para seleccionar una imagen
           </label>
         </div>
