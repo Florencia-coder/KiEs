@@ -292,19 +292,6 @@ function drawSymmetryLines(asymmetries) {
   const existingLines = document.querySelectorAll(".line");
   existingLines.forEach((line) => line.remove());
 
-  // Dibujar línea vertical que pasa por P1 (primer punto)
-  if (points.length >= 1) {
-    const { x, y } = points[0]; // Coordenadas del primer punto
-    const verticalLine = document.createElement("div");
-    verticalLine.classList.add("line");
-    verticalLine.style.position = "absolute";
-    verticalLine.style.left = `${x}px`;
-    verticalLine.style.top = "0px"; // Empieza desde la parte superior de la imagen
-    verticalLine.style.height = `${imageContainer.offsetHeight}px`; // La línea llega hasta el fondo de la imagen
-    verticalLine.style.width = "2px"; // Ancho de la línea
-    verticalLine.style.backgroundColor = "blue"; // Color de la línea
-    imageContainer.appendChild(verticalLine);
-  }
 
   // Dibujar líneas extendidas entre puntos 2-3, 4-5, 6-7
   if (points.length >= 4) {
@@ -382,23 +369,24 @@ function drawExtendedLine(point1, point2, color) {
 
 // Función para evaluar la postura cervical
 function evaluarCervical(angulo) {
-  if (angulo >= 160 && angulo <= 180) {
-    return "Postura cervical: Dentro de rango normal (160 a 180 grados).";
-  } else if (angulo < 160) {
-    return "Postura cervical: Hiperlordosis cervical (Ángulo menor a 160 grados).";
-  } else if (angulo > 180) {
-    return "Postura cervical: Hipocifosis cervical (Ángulo mayor a 180 grados).";
+  if (angulo >= 30 && angulo <= 35) {
+    return "Postura cervical: Dentro de rango normal (30 a 35 grados).\n" + "rango fisiologico: 30 grados a 35 grados";
+    
+  } else if (angulo < 30) {
+    return "Postura cervical: Hipolordosis cervical (Ángulo menor a 30 grados).";
+  } else {
+    return "Postura cervical: Hiperlordosis cervical (Ángulo mayor a 35 grados).";
   }
 }
 
 // Función para evaluar la postura dorsal
 function evaluarDorsal(angulo) {
-  if (angulo >= 170 && angulo <= 180) {
-    return "Postura dorsal: Dentro de rango normal (170 a 180 grados).";
-  } else if (angulo < 170) {
-    return "Postura dorsal: Hipercifosis dorsal (Ángulo menor a 170 grados).";
-  } else if (angulo > 180) {
-    return "Postura dorsal: Hipolordosis dorsal (Ángulo mayor a 180 grados).";
+  if (angulo >= 20 && angulo <= 45) {
+    return "Postura dorsal: Dentro de rango normal (20 a 45 grados).\n" + "rango fisiologico: 20 grados - 45 grados";
+  } else if (angulo < 20) {
+    return "Postura dorsal: Hipocifosis dorsal (Ángulo menor a 20 grados).";
+  } else {
+    return "Postura dorsal: Hipercifosis dorsal (Ángulo mayor a 45 grados).";
   }
 }
 

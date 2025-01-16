@@ -160,8 +160,8 @@
     <script>
       const pacienteDatos = JSON.parse('{{ paciente | tojson | safe }}');
       const videoElement = document.getElementById("videoFeed");
-      const canvasElement = document.getElementById("output_canvas");
-      const ctx2 = canvasElement.getContext("2d");
+      const outputCanvas = document.getElementById("output_canvas");
+      const ctx2 = outputCanvas.getContext("2d");
       let capturedImageData = null;
       let isRearCamera = false;
 
@@ -217,9 +217,9 @@
       pose.onResults(onResults);
 
       function onResults(results) {
-        canvasElement.width = videoElement.videoWidth;
-        canvasElement.height = videoElement.videoHeight;
-        ctx2.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        outputCanvas.width = videoElement.videoWidth;
+        outputCanvas.height = videoElement.videoHeight;
+        ctx2.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
 
         if (results.poseLandmarks) {
           const landmarks = results.poseLandmarks;
@@ -250,12 +250,12 @@
           currentAngles = [Math.round(shoulderAngle), Math.round(hipAngle)];
           ctx2.fillText(
             `Ángulo de Hombros: ${Math.round(shoulderAngle)}°`,
-            -canvasElement.width + 10,
+            -outputCanvas.width + 10,
             20
           );
           ctx2.fillText(
             `Ángulo de Caderas: ${Math.round(hipAngle)}°`,
-            -canvasElement.width + 10,
+            -outputCanvas.width + 10,
             40
           );
 
@@ -268,12 +268,12 @@
         // Dibuja la línea entre los puntos seleccionados
         ctx2.beginPath();
         ctx2.moveTo(
-          point1.x * canvasElement.width,
-          point1.y * canvasElement.height
+          point1.x * outputCanvas.width,
+          point1.y * outputCanvas.height
         );
         ctx2.lineTo(
-          point2.x * canvasElement.width,
-          point2.y * canvasElement.height
+          point2.x * outputCanvas.width,
+          point2.y * outputCanvas.height
         );
         ctx2.strokeStyle = "red";
         ctx2.lineWidth = 2;
@@ -282,11 +282,11 @@
 
         // Línea horizontal de referencia
         const referenceY = isShoulder
-          ? point1.y * canvasElement.height
-          : point2.y * canvasElement.height;
+          ? point1.y * outputCanvas.height
+          : point2.y * outputCanvas.height;
         ctx2.beginPath();
-        ctx2.moveTo(point1.x * canvasElement.width, referenceY);
-        ctx2.lineTo(point2.x * canvasElement.width, referenceY);
+        ctx2.moveTo(point1.x * outputCanvas.width, referenceY);
+        ctx2.lineTo(point2.x * outputCanvas.width, referenceY);
         ctx2.strokeStyle = "green";
         ctx2.lineWidth = 2;
         ctx2.stroke();
@@ -294,11 +294,11 @@
 
         // Vectores para el cálculo del ángulo
         const vector1 = {
-          x: (point2.x - point1.x) * canvasElement.width,
-          y: (point2.y - point1.y) * canvasElement.height,
+          x: (point2.x - point1.x) * outputCanvas.width,
+          y: (point2.y - point1.y) * outputCanvas.height,
         };
         const vector2 = {
-          x: (point2.x - point1.x) * canvasElement.width,
+          x: (point2.x - point1.x) * outputCanvas.width,
           y: 0,
         };
 
@@ -316,16 +316,16 @@
         const internalAngle = Math.min(angleDegrees, 180 - angleDegrees);
 
         // Centro y dimensiones de la elipse para dibujar el ángulo
-        const centerX = ((point1.x + point2.x) * canvasElement.width) / 2;
-        const centerY = ((point1.y + point2.y) * canvasElement.height) / 2;
+        const centerX = ((point1.x + point2.x) * outputCanvas.width) / 2;
+        const centerY = ((point1.y + point2.y) * outputCanvas.height) / 2;
         const distance =
           (Math.sqrt((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2) *
-            canvasElement.width) /
+          outputCanvas.width) /
           3;
 
         // Configuración del ángulo de inicio y fin en función de la posición de los puntos
         const startAngle =
-          point1.y > referenceY / canvasElement.height ? 0 : Math.PI;
+          point1.y > referenceY / outputCanvas.height ? 0 : Math.PI;
         const endAngle = startAngle + (internalAngle * Math.PI) / 180;
 
         // Dibuja el arco representando el ángulo interno
@@ -366,51 +366,92 @@
       let capturedAngles = null; // Variable para almacenar los ángulos capturados
 
       function captureImageFromFeed() {
-        // Crear un canvas temporal
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-
-        // Establecer el tamaño del canvas temporal igual al tamaño del video o del output_canvas
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-
-        // Reflejar la imagen horizontalmente
-        context.translate(canvas.width, 0); // Desplazar el contexto al borde derecho
-        if (!isRearCamera) {
-          context.scale(-1, 1); // Escalar en -1 en el eje X para reflejar
+        // Verificar que el video esté listo
+        if (videoElement.readyState < 3) {
+          console.error("El video no está listo para capturar.");
+          return;
         }
 
+        // Crear un canvas temporal para capturar la imagen del video
+        const captureCanvas = document.createElement("canvas");
+        const captureContext = captureCanvas.getContext("2d");
+
+        // Configurar el tamaño del canvas para coincidir con el video
+        captureCanvas.width = videoElement.videoWidth;
+        captureCanvas.height = videoElement.videoHeight;
+
+         // Detectar si se está usando la cámara frontal
+         console.log('is Rear camera', isRearCamera);
+         
+
+if (!isRearCamera) {
+  console.log('entre a camara frontal')
+  // Reflejar horizontalmente para corregir el espejado
+  captureContext.translate(captureCanvas.width, 0);
+  captureContext.scale(-1, 1);
+}
+
         // Dibujar el video en el canvas temporal
-        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        captureContext.drawImage(
+          videoElement,
+          0,
+          0,
+          captureCanvas.width,
+          captureCanvas.height
+        );
 
-        // Dibujar el contenido del output_canvas encima del video
+        // Transferir las líneas/ángulos del canvas original (si existen)
         const outputCanvas = document.getElementById("output_canvas");
-        context.drawImage(outputCanvas, 0, 0, canvas.width, canvas.height);
+        console.log({ outputCanvas });
 
-        // Convertir el canvas temporal en una URL de imagen
-        capturedImageData = canvas.toDataURL("image/png");
+        if (outputCanvas) {
+          if(isRearCamera){
+            captureContext.save();
+      
+      // Reflejar solo el contenido del outputCanvas
+      captureContext.translate(captureCanvas.width, 0); // Mover al lado opuesto
+      captureContext.scale(-1, 1); // Reflejar horizontalmente
 
-        // Asignar la URL de imagen al elemento img para mostrar la captura
+      // Dibujar el outputCanvas reflejado
+      captureContext.drawImage(
+        outputCanvas,
+        0,
+        0,
+        captureCanvas.width,
+        captureCanvas.height
+      );
+
+      // Restaurar el estado del contexto original
+      captureContext.restore();
+          }else{
+            captureContext.drawImage(
+            outputCanvas,
+            0,
+            0,
+            captureCanvas.width,
+            captureCanvas.height
+          );
+          }
+
+        }
+        capturedImageData = captureCanvas.toDataURL("image/png");
+        // Mostrar la imagen capturada
         const capturedImage = document.getElementById("capturedImage");
         capturedImage.src = capturedImageData;
-        capturedImage.style.display = "block"; // Mostrar la imagen capturada
+        capturedImage.style.display = "block";
         document.getElementById("generateLiveButton").style.display = "block";
 
-        // Capturar los valores actuales de los ángulos
-        capturedAngles = currentAngles; // Guardar los ángulos en el momento de la captura
-        addAngleList(capturedAngles[0], capturedAngles[1]);
+         // Capturar los valores actuales de los ángulos
+         capturedAngles = currentAngles; // Guardar los ángulos en el momento de la captura
+         addAngleList(capturedAngles[0], capturedAngles[1]);
       }
-
-      // Ajustar el botón de "Guardar Análisis"
       document
         .getElementById("generateLiveButton")
         .addEventListener("click", (event) => {
-          console.log(canvasElement.toDataURL("image/png"));
-          console.log(capturedAngles);
 
           event.preventDefault(); // Evita el envío del formulario
           generatePDFFromFeed(
-            canvasElement.toDataURL("image/png"),
+            outputCanvas.toDataURL("image/png"),
             capturedAngles[0],
             capturedAngles[1]
           );
