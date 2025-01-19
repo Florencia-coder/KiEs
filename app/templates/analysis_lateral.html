@@ -33,11 +33,11 @@
       </div>
       <div class="info-box" id="infoBox">
         <i class="bi bi-info-circle"></i>
-        Marque los 8 puntos consecutivos en la zona medial de; la base del
-        cráneo, acromion de articulación del hombro, parte superior de cresta
-        iliaca,Zona medial del codo, Parte inferior de la cresta ilíaca,
-        zona medial de articulación de la rodilla, Zona medial de la articulación del tobillo 
-        y Punta de la 2ª falange del dedo gordo del pie
+        Para realizar el análisis, deberás marcar 6 puntos en la siguiente secuencia:
+
+        Puntos p1 y p2: Marca el inicio y el final de una trayectoria lineal a la altura cervical.
+        Puntos p3 y p4: Marca el inicio y el final de una trayectoria lineal a la altura dorsal.
+        Puntos p5 y p6: Marca el inicio y el final de una trayectoria lineal a la altura lumbar.
       </div>
 
       <!-- Image Upload and Preview Section -->
@@ -258,20 +258,20 @@
             
             // Verificación y cálculo de ángulos
             if (points.length >= 3) {
-              const anguloCervical = calcularAngulo(points[0], points[1], points[2]);
+              const anguloCervical = calcularAngulo(points[0], points[1], points[2], points[3]);
               const evaluacionCervical = evaluarCervical(anguloCervical);
               doc.text(
-                `• Ángulo Cervical: ${anguloCervical.toFixed(2)}° - ${evaluacionCervical}`,
+                `• Ángulo Dorsal: ${anguloCervical.toFixed(2)}° - ${evaluacionCervical}`,
                 15,
                yPosition
               );
               yPosition += lineSpacing;
 
-              if (points.length === 4) {
-                const anguloDorsal = calcularAngulo(points[1], points[2], points[3]);
+              if (points.length >= 4) {
+                const anguloDorsal = calcularAngulo(points[2], points[3], points[4], points[5]);
                 const evaluacionDorsal = evaluarDorsal(anguloDorsal);
                 doc.text(
-                  `• Ángulo Dorsal: ${anguloDorsal.toFixed(2)}° - ${evaluacionDorsal}`,
+                  `• Ángulo Lumbar: ${anguloDorsal.toFixed(2)}° - ${evaluacionDorsal}`,
                   15,
                   yPosition
                 );

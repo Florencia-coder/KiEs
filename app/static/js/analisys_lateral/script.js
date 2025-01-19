@@ -122,8 +122,8 @@ function previewImage(event) {
 // Función para manejar los clics y guardar los puntos
 function markPoint(event) {
   // Limitar el número de puntos a 8
-  if (points.length >= 8) {
-    alert("Se ha alcanzado el número máximo de puntos (8).");
+  if (points.length >= 6) {
+    alert("Se ha alcanzado el número máximo de puntos (6).");
     return; 
   }
 
@@ -147,20 +147,14 @@ function markPoint(event) {
   let label = "";
   let labelColor = "";
 
-  if (points.length === 0) {
-    label = "1"; // Primer punto
-    labelColor = "blue"; // Azul
-  } else if (points.length === 1) {
-    label = "2"; // Segundo punto
-    labelColor = "blue"; // Azul
+  if (points.length === 0 || points.length === 1) {
+    label = `${points.length + 1}`; // Puntos 1 y 2
+    labelColor = "orange"; // Naranja
   } else if (points.length === 2 || points.length === 3) {
     label = `${points.length + 1}`; // Puntos 3 y 4
-    labelColor = "orange"; // Naranja
+    labelColor = "red"; // Rojo
   } else if (points.length === 4 || points.length === 5) {
     label = `${points.length + 1}`; // Puntos 5 y 6
-    labelColor = "red"; // Rojo
-  } else if (points.length === 6 || points.length === 7) {
-    label = `${points.length + 1}`; // Puntos 7 y 8
     labelColor = "violet"; // Violeta
   }
 
@@ -190,16 +184,23 @@ function markPoint(event) {
   }
 }
 
+function calcularAngulo(p1, p2, p3, p4) {
 
-function calcularAngulo(p1, p2, p3) {
-  const angle1 = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-  const angle2 = Math.atan2(p3.y - p2.y, p3.x - p2.x);
-  let angle = (angle2 - angle1) * (180 / Math.PI);
+  // Cálculo de las pendientes
+  const angle1 = (p2.y - p1.y) / (p2.x - p1.x);
+  const angle2 = (p4.y - p3.y) / (p4.x - p3.x);
 
-  // Normalizar el ángulo
-  if (angle < 0) angle += 360;
-  return angle;
+  // Manejo de pendientes verticales
+  const pendiente1 = p2.x !== p1.x ? angle1 : Infinity;
+  const pendiente2 = p4.x !== p3.x ? angle2 : Infinity;
+
+  // Fórmula para calcular el ángulo
+  const angle = Math.atan(Math.abs((pendiente2 - pendiente1) / (1 + pendiente1 * pendiente2)));
+
+  // Convertir a grados
+  return (angle * 180) / Math.PI;
 }
+
 // Extender las rectas y ajustar la longitud
 function extenderLinea(p1, p2, height) {
   // Extendemos la línea en ambas direcciones
@@ -233,15 +234,15 @@ function analyzePoints() {
   }
 
   // Calcular los ángulos
-  const anguloCervical = calcularAngulo(points[0], points[1], points[2]);
+  const anguloCervical = calcularAngulo(points[0], points[1], points[2], points[3]);
 
   // Evaluar postura cervical
   const evaluacionCervical = evaluarCervical(anguloCervical);
 
   let anguloDorsal = null;
   let evaluacionDorsal = "";
-  if (points.length == 4) {
-    anguloDorsal = calcularAngulo(points[1], points[2], points[3]);
+  if (points.length >= 4) {
+    anguloDorsal = calcularAngulo(points[2], points[3], points[4], points[5]);
     evaluacionDorsal = evaluarDorsal(anguloDorsal);
   }
 
@@ -273,15 +274,14 @@ function analyzePoints() {
   resultList.style.display = "block";
   resultList.innerHTML = ""; // Borrar resultados anteriores
   const cervicalItem = document.createElement("li");
-  cervicalItem.textContent = `Ángulo Cervical: ${anguloCervical.toFixed(2)} grados - ${evaluacionCervical}`;
-
+  cervicalItem.textContent = `Ángulo Dosal: ${anguloCervical.toFixed(2)} grados - ${evaluacionCervical}`;
   resultList.appendChild(cervicalItem);
 
-  if (anguloDorsal !== null) {
-    const dorsalItem = document.createElement("li");
-    dorsalItem.textContent = `Ángulo Dorsal: ${anguloDorsal.toFixed(2)} grados - ${evaluacionDorsal}`;
-    resultList.appendChild(dorsalItem);
-  }
+ 
+  const dorsalItem = document.createElement("li");
+  dorsalItem.textContent = `Ángulo Lumbar: ${anguloDorsal.toFixed(2)} grados - ${evaluacionDorsal}`;
+  resultList.appendChild(dorsalItem);
+  
   document.getElementById("generateButton").style.display = "block";
 }
 
@@ -294,18 +294,18 @@ function drawSymmetryLines(asymmetries) {
 
 
   // Dibujar líneas extendidas entre puntos 2-3, 4-5, 6-7
-  if (points.length >= 4) {
-    const lineNaranja = drawExtendedLine(points[2], points[3], "orange");
+  if (points.length >= 2) {
+    const lineNaranja = drawExtendedLine(points[0], points[1], "orange");
     imageContainer.appendChild(lineNaranja);
   }
 
-  if (points.length >= 6) {
-    const lineRoja = drawExtendedLine(points[4], points[5], "red"); // Cambié de blanco a rojo
+  if (points.length >= 4) {
+    const lineRoja = drawExtendedLine(points[2], points[3], "red"); // Cambié de blanco a rojo
     imageContainer.appendChild(lineRoja);
   }
 
-  if (points.length >= 8) {
-    const lineAzul = drawExtendedLine(points[6], points[7], "deepskyblue"); // Cambié de amarillo a azul eléctrico
+  if (points.length >= 6) {
+    const lineAzul = drawExtendedLine(points[4], points[5], "deepskyblue"); // Cambié de amarillo a azul eléctrico
     imageContainer.appendChild(lineAzul);
   }
 
@@ -365,28 +365,22 @@ function drawExtendedLine(point1, point2, color) {
   return line;
 }
 
-
-
-// Función para evaluar la postura cervical
+// Función para evaluar la curvatura Dorsal
 function evaluarCervical(angulo) {
-  if (angulo >= 30 && angulo <= 35) {
-    return "Postura cervical: Dentro de rango normal (30 a 35 grados).\n" + "rango fisiologico: 30 grados a 35 grados";
-    
-  } else if (angulo < 30) {
-    return "Postura cervical: Hipolordosis cervical (Ángulo menor a 30 grados).";
-  } else {
-    return "Postura cervical: Hiperlordosis cervical (Ángulo mayor a 35 grados).";
+  if (angulo >= 20 && angulo <= 40) {
+    return "Dentro de rango normal (20 a 40 grados).\n";
+
+  } else if (angulo >40){
+    return "Se estima una hipercifosis dorsal (Ángulo mayor a 40 grados).";
   }
 }
 
-// Función para evaluar la postura dorsal
+// Función para evaluar la curvatura Lumbar
 function evaluarDorsal(angulo) {
-  if (angulo >= 20 && angulo <= 45) {
-    return "Postura dorsal: Dentro de rango normal (20 a 45 grados).\n" + "rango fisiologico: 20 grados - 45 grados";
-  } else if (angulo < 20) {
-    return "Postura dorsal: Hipocifosis dorsal (Ángulo menor a 20 grados).";
-  } else {
-    return "Postura dorsal: Hipercifosis dorsal (Ángulo mayor a 45 grados).";
+  if (angulo >= 40 && angulo <= 60) {
+    return " Dentro de rango normal (40 a 60 grados).\n";
+  } else if (angulo >60) {
+    return " Hipercifosis lumbar (Ángulo mayor a 60 grados).";
   }
 }
 
