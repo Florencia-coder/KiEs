@@ -367,25 +367,25 @@ function drawExtendedLine(point1, point2, color) {
 
 // Función para evaluar la curvatura Dorsal
 function evaluarCervical(angulo) {
-  if (angulo >= 20 && angulo <= 40) {
-    return "Dentro de rango normal (20 a 40 grados).\n";
+  if (angulo >= 20 && angulo <= 45) {
+    return "Se estima Cifosis Fisiológica (ángulo entre 20 y 45 grados)\n";
 
-  } else if (angulo >40){
-    return "Se estima una hipercifosis (Ángulo mayor a 40 grados).";
+  } else if (angulo >45){
+    return "Se estima Hipercifosis dorsal (ángulo mayor a 45 grados).";
   }
-  else if (angulo <20 && angulo >=10 ) {
-    return " Se estima dentro de rango normal";
+  else if (angulo <20 && angulo >=0 ) {
+    return " Se estima Rectificación (ángulo menor a 20 grados)";
   }
 }
 
 // Función para evaluar la curvatura Lumbar
 function evaluarDorsal(angulo) {
   if (angulo >= 40 && angulo <= 60) {
-    return " Dentro de rango normal (40 a 60 grados).\n";
+    return " Se estima Lordosis Fisiológica (ángulo entre 40 y 60 grados)\n";
   } else if (angulo >60) {
-    return " Se estima una Hiperlordosis (Ángulo mayor a 60 grados).";
-  } else if (angulo <40 && angulo >=30 ) {
-    return " Se estima dentro de rango normal";
+    return " Se estima Hiperlordosis lumbar (ángulo mayor a 60 grados).";
+  } else if (angulo <40 && angulo >=0 ) {
+    return " Se estima Rectificación (ángulo menor a 40 grados)";
   }
 }
 
