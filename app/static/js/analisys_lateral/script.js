@@ -371,7 +371,10 @@ function evaluarCervical(angulo) {
     return "Dentro de rango normal (20 a 40 grados).\n";
 
   } else if (angulo >40){
-    return "Se estima una hipercifosis dorsal (Ángulo mayor a 40 grados).";
+    return "Se estima una hipercifosis (Ángulo mayor a 40 grados).";
+  }
+  else if (angulo <20 && angulo >=10 ) {
+    return " Se estima dentro de rango normal";
   }
 }
 
@@ -380,7 +383,9 @@ function evaluarDorsal(angulo) {
   if (angulo >= 40 && angulo <= 60) {
     return " Dentro de rango normal (40 a 60 grados).\n";
   } else if (angulo >60) {
-    return " Hipercifosis lumbar (Ángulo mayor a 60 grados).";
+    return " Se estima una Hiperlordosis (Ángulo mayor a 60 grados).";
+  } else if (angulo <40 && angulo >=30 ) {
+    return " Se estima dentro de rango normal";
   }
 }
 
