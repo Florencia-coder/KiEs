@@ -33,13 +33,25 @@
       </div>
       <div class="info-box" id="infoBox">
         <i class="bi bi-info-circle"></i>
-        <span>Para realizar el análisis, deberás marcar 6 puntos en la siguiente secuencia:</span><br>
-        <span>Puntos p1 y p2: Marca el inicio y el final de una trayectoria lineal a la altura cervical.</span><br>
-        <span>Puntos p3 y p4: Marca el inicio y el final de una trayectoria lineal a la altura dorsal.</span><br>
-        <span>Puntos p5 y p6: Marca el inicio y el final de una trayectoria lineal a la altura lumbar.</span>
+        <span
+          >Para realizar el análisis, deberás marcar 6 puntos en la siguiente
+          secuencia:</span
+        ><br />
+        <span
+          >Puntos p1 y p2: Marca el inicio y el final de una trayectoria lineal
+          previo al ángulo de cifosis dorsal, es decir, cercano a la región
+          cervical.</span
+        ><br />
+        <span
+          >Puntos p3 y p4: Marca el inicio y el final de una trayectoria lineal
+          posterior al ángulo de cifosis dorsal.</span
+        ><br />
+        <span
+          >Puntos p5 y p6: Marca el inicio y el final de una trayectoria lineal
+          previo al ángulo sacro, es decir en la última porción de la región
+          lumbar.</span
+        >
       </div>
-      
-      
 
       <!-- Image Upload and Preview Section -->
       <div class="container_img">
@@ -54,11 +66,11 @@
               onchange="previewImage(event)"
             />
             <img
-            src="{{ url_for('static', filename='img/monigoto_lateral.avif') }}"
-            width="30px"
-            style="opacity: 0.7"
-            alt="Imagen de ejemplo"
-          />
+              src="{{ url_for('static', filename='img/monigoto_lateral.avif') }}"
+              width="30px"
+              style="opacity: 0.7"
+              alt="Imagen de ejemplo"
+            />
             Haz clic aquí para seleccionar una imagen
           </label>
         </div>
@@ -84,7 +96,7 @@
           class="btn btn-light remove-button"
           onclick="removePoint()"
         >
-        <i class="bi bi-x icon-remove"></i> Remover ultimo punto
+          <i class="bi bi-x icon-remove"></i> Remover último punto
         </button>
         <button
           type="submit"
@@ -137,8 +149,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <!-- PDF Generation Script -->
-  <script>
-      const pacienteDatos = JSON.parse('{{ paciente | tojson | safe }}');
+    <script>
+           const pacienteDatos = JSON.parse('{{ paciente | tojson | safe }}');
 
       function generatePDF() {
         const { jsPDF } = window.jspdf;
@@ -171,9 +183,9 @@
           // Información del paciente
           doc.setFont("Helvetica", "normal");
           doc.setFontSize(12);
-          doc.text("DATOS DEL PACIENTE:", 15, 45);
+          doc.text("DATOS DE LA PERSONA ANALIZADA:", 15, 45);
           doc.setLineWidth(0.3);
-          doc.line(15, 46, 62, 46); // Línea debajo de "DATOS DEL PACIENTE"
+          doc.line(15, 46, 90, 46); // Línea debajo de "DATOS DE LA PERSONA ANALIZADA"
 
           const datosPacienteY = 52;
           lineSpacing = 4;
@@ -256,23 +268,37 @@
             yPosition = lineBelowImage + 18;
             doc.setFontSize(10);
             doc.setFont("Helvetica", "Oblique");
-            
+
             // Verificación y cálculo de ángulos
             if (points.length >= 3) {
-              const anguloCervical = calcularAngulo(points[0], points[1], points[2], points[3]);
+              const anguloCervical = calcularAngulo(
+                points[0],
+                points[1],
+                points[2],
+                points[3]
+              );
               const evaluacionCervical = evaluarCervical(anguloCervical);
               doc.text(
-                `• Ángulo Dorsal: ${anguloCervical.toFixed(2)}° - ${evaluacionCervical}`,
+                `• Ángulo Dorsal: ${anguloCervical.toFixed(
+                  2
+                )}° - ${evaluacionCervical}`,
                 15,
-               yPosition
+                yPosition
               );
               yPosition += lineSpacing;
 
               if (points.length >= 4) {
-                const anguloDorsal = calcularAngulo(points[2], points[3], points[4], points[5]);
+                const anguloDorsal = calcularAngulo(
+                  points[2],
+                  points[3],
+                  points[4],
+                  points[5]
+                );
                 const evaluacionDorsal = evaluarDorsal(anguloDorsal);
                 doc.text(
-                  `• Ángulo Lumbar: ${anguloDorsal.toFixed(2)}° - ${evaluacionDorsal}`,
+                  `• Ángulo Lumbar: ${anguloDorsal.toFixed(
+                    2
+                  )}° - ${evaluacionDorsal}`,
                   15,
                   yPosition
                 );
@@ -280,15 +306,19 @@
             }
 
             // Guardar el PDF
-        doc.save(`Análisis_lateral_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`);
+            doc.save(
+              `Análisis_lateral_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`
+            );
           });
         };
       }
 
-      document.getElementById("generateButton").addEventListener("click", (event) => {
-        event.preventDefault();
-        generatePDF();
-      });
+      document
+        .getElementById("generateButton")
+        .addEventListener("click", (event) => {
+          event.preventDefault();
+          generatePDF();
+        });
     </script>
   </body>
 </html>

@@ -363,9 +363,9 @@ function generatePDF(imgData, shoulderAngle, hipAngle) {
     // Información del paciente
     doc.setFont("Helvetica", "normal");
     doc.setFontSize(12);
-    doc.text("DATOS DEL PACIENTE:", 15, 45);
+    doc.text("DATOS DE LA PERSONA ANALIZADA:", 15, 45);
     doc.setLineWidth(0.3);
-    doc.line(15, 46, 62, 46); // Línea debajo de "DATOS DEL PACIENTE"
+    doc.line(15, 46, 90, 46); // Línea debajo de "DATOS DE LA PERSONA ANALIZADA"
 
     const datosPacienteY = 52;
     lineSpacing = 4;

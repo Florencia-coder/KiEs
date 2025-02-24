@@ -27,9 +27,9 @@
       </header>
       <div class="info-img-box" id="infoImgBox">
         <i class="bi bi-info-circle"></i>
-        La imagen de la persona debe ser de cuerpo entero, de frente a la cámara,
-        realizando la postura del Test de Adams, con el torso desnudo para la
-        apreciación visual de las apófisis.
+        La imagen de la persona debe ser de cuerpo entero, de frente a la
+        cámara, realizando la postura del Test de Adams, con el torso desnudo
+        para la apreciación visual de las apófisis.
       </div>
       <div class="info-box" id="infoBox">
         <i class="bi bi-info-circle"></i>
@@ -49,11 +49,11 @@
               onchange="previewImage(event)"
             />
             <img
-            src="{{ url_for('static', filename='img/monigote_adams.jpeg') }}"
-            width="70px"
-            style="opacity: 0.7"
-            alt="Imagen de ejemplo"
-          />
+              src="{{ url_for('static', filename='img/monigote_adams.jpeg') }}"
+              width="70px"
+              style="opacity: 0.7"
+              alt="Imagen de ejemplo"
+            />
             Haz clic aquí para seleccionar una imagen
           </label>
         </div>
@@ -76,8 +76,8 @@
           class="btn btn-light remove-button"
           onclick="removePoint()"
         >
-        <i class="bi bi-x icon-remove"></i>
-          Remover ultimo punto
+          <i class="bi bi-x icon-remove"></i>
+          Remover último punto
         </button>
         <button type="button" class="button" onclick="analyzePoints()">
           ANALIZAR PUNTOS
@@ -151,9 +151,9 @@
           // Información del paciente
           doc.setFont("Helvetica", "normal");
           doc.setFontSize(12);
-          doc.text("DATOS DEL PACIENTE:", 15, 45);
+          doc.text("DATOS DE LA PERSONA ANALIZADA:", 15, 45);
           doc.setLineWidth(0.3);
-          doc.line(15, 46, 62, 46); // Línea debajo de "DATOS DEL PACIENTE"
+          doc.line(15, 46, 90, 46); // Línea debajo de "DATOS DE LA PERSONA ANALIZADA:"
 
           const datosPacienteY = 52;
           lineSpacing = 4;
@@ -258,7 +258,9 @@
             }
 
             // Guardar el PDF
-            doc.save(`Análisis_Apófisis_Espinosas_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`);
+            doc.save(
+              `Análisis_Apófisis_Espinosas_${pacienteDatos["dni"]}_${pacienteDatos.consultaDate}.pdf`
+            );
           });
         };
       }

@@ -104,7 +104,7 @@
           onclick="handleRemoveLastPoint()"
         >
           <i class="bi bi-x icon-remove"></i>
-          Remover ultimo punto
+          Remover último punto
         </button>
         <button
           type="button"
@@ -158,7 +158,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
-      const pacienteDatos = JSON.parse('{{ paciente | tojson | safe }}');
+       const pacienteDatos = JSON.parse('{{ paciente | tojson | safe }}');
       const videoElement = document.getElementById("videoFeed");
       const outputCanvas = document.getElementById("output_canvas");
       const ctx2 = outputCanvas.getContext("2d");
@@ -320,7 +320,7 @@
         const centerY = ((point1.y + point2.y) * outputCanvas.height) / 2;
         const distance =
           (Math.sqrt((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2) *
-          outputCanvas.width) /
+            outputCanvas.width) /
           3;
 
         // Configuración del ángulo de inicio y fin en función de la posición de los puntos
@@ -380,16 +380,14 @@
         captureCanvas.width = videoElement.videoWidth;
         captureCanvas.height = videoElement.videoHeight;
 
-         // Detectar si se está usando la cámara frontal
-         console.log('is Rear camera', isRearCamera);
-         
+        // Detectar si se está usando la cámara frontal
+        console.log("is Rear camera", isRearCamera);
 
-if (!isRearCamera) {
-  console.log('entre a camara frontal')
-  // Reflejar horizontalmente para corregir el espejado
-  captureContext.translate(captureCanvas.width, 0);
-  captureContext.scale(-1, 1);
-}
+        if (!isRearCamera) {
+          // Reflejar horizontalmente para corregir el espejado
+          captureContext.translate(captureCanvas.width, 0);
+          captureContext.scale(-1, 1);
+        }
 
         // Dibujar el video en el canvas temporal
         captureContext.drawImage(
@@ -405,34 +403,33 @@ if (!isRearCamera) {
         console.log({ outputCanvas });
 
         if (outputCanvas) {
-          if(isRearCamera){
+          if (isRearCamera) {
             captureContext.save();
-      
-      // Reflejar solo el contenido del outputCanvas
-      captureContext.translate(captureCanvas.width, 0); // Mover al lado opuesto
-      captureContext.scale(-1, 1); // Reflejar horizontalmente
 
-      // Dibujar el outputCanvas reflejado
-      captureContext.drawImage(
-        outputCanvas,
-        0,
-        0,
-        captureCanvas.width,
-        captureCanvas.height
-      );
+            // Reflejar solo el contenido del outputCanvas
+            captureContext.translate(captureCanvas.width, 0); // Mover al lado opuesto
+            captureContext.scale(-1, 1); // Reflejar horizontalmente
 
-      // Restaurar el estado del contexto original
-      captureContext.restore();
-          }else{
+            // Dibujar el outputCanvas reflejado
             captureContext.drawImage(
-            outputCanvas,
-            0,
-            0,
-            captureCanvas.width,
-            captureCanvas.height
-          );
-          }
+              outputCanvas,
+              0,
+              0,
+              captureCanvas.width,
+              captureCanvas.height
+            );
 
+            // Restaurar el estado del contexto original
+            captureContext.restore();
+          } else {
+            captureContext.drawImage(
+              outputCanvas,
+              0,
+              0,
+              captureCanvas.width,
+              captureCanvas.height
+            );
+          }
         }
         capturedImageData = captureCanvas.toDataURL("image/png");
         // Mostrar la imagen capturada
@@ -441,14 +438,13 @@ if (!isRearCamera) {
         capturedImage.style.display = "block";
         document.getElementById("generateLiveButton").style.display = "block";
 
-         // Capturar los valores actuales de los ángulos
-         capturedAngles = currentAngles; // Guardar los ángulos en el momento de la captura
-         addAngleList(capturedAngles[0], capturedAngles[1]);
+        // Capturar los valores actuales de los ángulos
+        capturedAngles = currentAngles; // Guardar los ángulos en el momento de la captura
+        addAngleList(capturedAngles[0], capturedAngles[1]);
       }
       document
         .getElementById("generateLiveButton")
         .addEventListener("click", (event) => {
-
           event.preventDefault(); // Evita el envío del formulario
           generatePDFFromFeed(
             outputCanvas.toDataURL("image/png"),
@@ -488,9 +484,9 @@ if (!isRearCamera) {
           // Información del paciente
           doc.setFont("Helvetica", "normal");
           doc.setFontSize(12);
-          doc.text("DATOS DEL PACIENTE:", 15, 45);
+          doc.text("DATOS DE LA PERSONA ANALIZADA:", 15, 45);
           doc.setLineWidth(0.3);
-          doc.line(15, 46, 62, 46); // Línea debajo de "DATOS DEL PACIENTE"
+          doc.line(15, 46, 90, 46); // Línea debajo de "DATOS DE LA PERSONA ANALIZADA"
 
           const datosPacienteY = 52;
           lineSpacing = 4;
