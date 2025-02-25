@@ -274,7 +274,7 @@ function analyzePoints() {
   resultList.style.display = "block";
   resultList.innerHTML = ""; // Borrar resultados anteriores
   const cervicalItem = document.createElement("li");
-  cervicalItem.textContent = `Ángulo Dosal: ${anguloCervical.toFixed(2)} grados - ${evaluacionCervical}`;
+  cervicalItem.textContent = `Ángulo Dorsal: ${anguloCervical.toFixed(2)} grados - ${evaluacionCervical}`;
   resultList.appendChild(cervicalItem);
 
  
